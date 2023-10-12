@@ -24,3 +24,8 @@ for table in tree.iter(TABLE):
         for cell in row.iter(CELL):
             print ''.join(node.text for node in cell.iter(TEXT))
 ```
+
+# Requirements
+- Support for PDF and DOCX
+- Collects required data
+- CSV export
