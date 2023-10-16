@@ -4,25 +4,29 @@ import glob     # Finding files with extensions
 
 
 def main():
-    print(getDocxFileList("test"))
-    docx_file = 'test\\test.docx'
+    docx_file_list = getDocxFileList("test")
 
-    institution = getInstitutionDetails(docx_file)  # It iz le dictionary
-    inst_name = institution["name"]
-    inst_place = institution["place"]
-    inst_number = institution["number"]
-    inst_email = institution["email"]
-    print(f"{inst_name}, {inst_place}, {inst_number}, {inst_email}")
+    for docx_file in docx_file_list:
 
-    student_data = getStudentDetails(docx_file)
-    for key, value in student_data.items():
-        name = value[0]
-        standard = value[1]
-        ifsc = value[2]
-        acc_no = value[3]
-        holder = value[4]
-        branch = value[5]
-        print(f"{name}, {standard}, {ifsc}, {acc_no}, {holder}, {branch}")
+        file_name = os.path.basename(docx_file)
+        print(f"==== {file_name} ====")
+
+        institution = getInstitutionDetails(docx_file)  # It iz le dictionary
+        inst_name = institution["name"]
+        inst_place = institution["place"]
+        inst_number = institution["number"]
+        inst_email = institution["email"]
+        print(f"{inst_name}, {inst_place}, {inst_number}, {inst_email}")
+
+        student_data = getStudentDetails(docx_file)  # It iz le tuple
+        for key, value in student_data.items():
+            name = value[0]
+            standard = value[1]
+            ifsc = value[2]
+            acc_no = value[3]
+            holder = value[4]
+            branch = value[5]
+            print(f"{name}, {standard}, {ifsc}, {acc_no}, {holder}, {branch}")
 
 
 # ================================ FUNCTIONS ================================ #
@@ -41,8 +45,7 @@ def getDocxFileList(dir):
     docx_list = []
 
     for docx_file in docx_files:
-        file_name = os.path.basename(docx_file)
-        docx_list = docx_list + [file_name]
+        docx_list = docx_list + [docx_file]
 
     return docx_list
 
