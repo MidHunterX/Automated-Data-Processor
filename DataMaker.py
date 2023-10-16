@@ -4,25 +4,17 @@ import glob     # Finding files with extensions
 
 
 def main():
-    # ========================= DIRECTORY SCANNING ========================= #
-    directory_path = 'test'
-    docx_files = glob.glob(os.path.join(directory_path, '*.docx'))
+    print(getDocxFileList("test"))
+    docx_file = 'test\\test.docx'
 
-    for docx_file in docx_files:
-        print(docx_file)
-        file_name = os.path.basename(docx_file)
-        print(file_name)
-
-    docx_file_path = 'test\\test.docx'
-
-    institution = institutionDetails(docx_file_path)  # It iz le dictionary
+    institution = getInstitutionDetails(docx_file)  # It iz le dictionary
     inst_name = institution["name"]
     inst_place = institution["place"]
     inst_number = institution["number"]
     inst_email = institution["email"]
     print(f"{inst_name}, {inst_place}, {inst_number}, {inst_email}")
 
-    student_data = studentDetails(docx_file_path)
+    student_data = getStudentDetails(docx_file)
     for key, value in student_data.items():
         name = value[0]
         standard = value[1]
@@ -33,9 +25,29 @@ def main():
         print(f"{name}, {standard}, {ifsc}, {acc_no}, {holder}, {branch}")
 
 
-# =========================== INSTITUTION DETAILS =========================== #
+# ================================ FUNCTIONS ================================ #
 
-def institutionDetails(docx_file):
+
+def getDocxFileList(dir):
+    """
+    Parameters:
+    Directory path
+
+    Returns:
+    A list of files with docx extension.
+    [file1.docx, file2.docx, file3.docx]
+    """
+    docx_files = glob.glob(os.path.join(dir, '*.docx'))
+    docx_list = []
+
+    for docx_file in docx_files:
+        file_name = os.path.basename(docx_file)
+        docx_list = docx_list + [file_name]
+
+    return docx_list
+
+
+def getInstitutionDetails(docx_file):
     """
     Docstring for institutionDetails
     --------------------------------
@@ -83,9 +95,7 @@ def institutionDetails(docx_file):
     return data
 
 
-# ============================= STUDENT DETAILS ============================= #
-
-def studentDetails(docx_file):
+def getStudentDetails(docx_file):
     """
     Docstring for studentDetails
     ----------------------------
