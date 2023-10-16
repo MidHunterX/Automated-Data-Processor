@@ -24,8 +24,14 @@ for table in tree.iter(TABLE):
         for cell in row.iter(CELL):
             print ''.join(node.text for node in cell.iter(TEXT))
 ```
+## DOCX Module
+Instead of Re-Inventing the wheel, let's use a premade module for simplicity.
+Let's follow the path of the people who went before.
+```
+pip install python-docx
+```
 
 # Requirements
-- Support for PDF and DOCX
-- Collects required data
-- CSV export
+- [ ] Support for PDF and DOCX
+- [x] Collects required data
+- [ ] CSV export
