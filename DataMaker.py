@@ -1,12 +1,23 @@
-import docx
+import docx     # Docx parsing
+import os       # Directory path support
+import glob     # Finding files with extensions
+
+
+# =========================== DIRECTORY SCANNING =========================== #
+directory_path = 'test'
+docx_files = glob.glob(os.path.join(directory_path, '*.docx'))
+
+for docx_file in docx_files:
+    print(docx_file)
+    file_name = os.path.basename(docx_file)
+    print(file_name)
+
 
 docx_file_path = 'test\\test.docx'
 doc = docx.Document(docx_file_path)
 
 
 # =========================== INSTITUTION DETAILS =========================== #
-
-# Variables
 inside_institution_details = False
 name_of_institution = ""
 place = ""
