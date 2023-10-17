@@ -7,12 +7,14 @@ import glob         # Finding files with extensions
 def main():
     input_dir = "test"
 
+    # ========================= PDF FILE PROCESSING ========================= #
+
     pdf_file_list = getPdfFileList(input_dir)
     if pdf_file_list:
         for pdf_file in pdf_file_list:
 
             file_name = os.path.basename(pdf_file)
-            print(f"==== {file_name} ====")
+            print(f"\n==== {file_name} ====")
 
             institution = getInstitutionDetailsPdf(pdf_file)
             inst_name = institution["name"]
@@ -26,12 +28,14 @@ def main():
                 name, standard, ifsc, acc_no, holder, branch = entry
                 print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
 
+    # ======================== DOCX FILE PROCESSING ======================== #
+
     docx_file_list = getDocxFileList(input_dir)
     if docx_file_list:
         for docx_file in docx_file_list:
 
             file_name = os.path.basename(docx_file)
-            print(f"==== {file_name} ====")
+            print(f"\n==== {file_name} ====")
 
             institution = getInstitutionDetailsDocx(docx_file)
             inst_name = institution["name"]
