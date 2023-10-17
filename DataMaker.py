@@ -35,29 +35,30 @@ def main():
 
 def getDocxFileList(dir):
     """
-    Parameters:
-    Directory path
+    Parameters: Directory path
+    Returns: A list of files with docx extension.
 
-    Returns:
-    A list of files with docx extension.
     [file1.docx, file2.docx, file3.docx]
     """
+
     docx_files = glob.glob(os.path.join(dir, '*.docx'))
     docx_list = []
-
     for docx_file in docx_files:
         docx_list = docx_list + [docx_file]
-
     return docx_list
 
 
 def getInstitutionDetails(docx_file):
     """
-    Docstring for institutionDetails
-    --------------------------------
     Parameters: Document.docx file
-    Returns Dictionary of following details:
-    name, place, number, email
+    Returns: Dictionary of Institution Details
+
+    data = {
+        "name": name_of_institution,
+        "place": place,
+        "number": phone_number,
+        "email": email_id
+    }
     """
 
     doc = docx.Document(docx_file)
@@ -101,11 +102,14 @@ def getInstitutionDetails(docx_file):
 
 def getStudentDetails(docx_file):
     """
-    Docstring for studentDetails
-    ----------------------------
     Parameter: Document.docx file
-    returns a dictionary of tuples with the following details:
-    (name, standard, ifsc, acc_no, holder, branch)
+    Returns: A dictionary of tuples with Student details
+
+    data = {
+        0: (name, standard, ifsc, acc_no, holder, branch),
+        1: (name, standard, ifsc, acc_no, holder, branch),
+        2: (name, standard, ifsc, acc_no, holder, branch)
+    }
     """
 
     doc = docx.Document(docx_file)
