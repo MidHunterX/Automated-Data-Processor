@@ -1,11 +1,13 @@
 import pdfplumber   # PDF parsing
 import docx         # Docx parsing
+import csv          # CSV file manipulation
 import os           # Directory path support
 import glob         # Finding files with extensions
 
 
 def main():
     input_dir = "test"
+    csv_file = "output.csv"
 
     # ========================= PDF FILE PROCESSING ========================= #
 
@@ -23,10 +25,21 @@ def main():
             inst_email = institution["email"]
             print(f"{inst_name},{inst_place},{inst_number},{inst_email}")
 
-            student_details_pdf = getStudentDetailsPdf(pdf_file)
-            for entry in student_details_pdf:
+            student_data = getStudentDetailsPdf(pdf_file)
+            for entry in student_data:
                 name, standard, ifsc, acc_no, holder, branch = entry
                 print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+
+    # --------------------- PDF TO CSV DATA CONVERSION --------------------- #
+
+            with open(csv_file, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                # Institution details
+                for value in institution.values():
+                    writer.writerow([value])
+                # Student details
+                for row in student_data:
+                    writer.writerow(row)
 
     # ======================== DOCX FILE PROCESSING ======================== #
 
@@ -53,6 +66,17 @@ def main():
                 holder = value[4]
                 branch = value[5]
                 print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+
+    # --------------------- DOCX TO CSV DATA CONVERSION --------------------- #
+
+            with open(csv_file, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                # Institution details
+                for value in institution.values():
+                    writer.writerow([value])
+                # Student details
+                for row in student_data.values():
+                    writer.writerow(row)
 
 
 # ================================ FUNCTIONS ================================ #
