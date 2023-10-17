@@ -59,7 +59,7 @@ with pdfplumber.open(pdf_file) as pdf:
             institution_details = text[start:end]
 
         if "Student Details" in text:
-            student_details = text[text.index("Student Details"):]
+            table = page.extract_table()
 
 # Print or process the extracted information.
 print("Institution Details:")
@@ -67,6 +67,41 @@ print(institution_details)
 
 print("Student Details:")
 print(student_details)
+```
+
+## Camelot
+PDF Plumber might be better than PyPDF2 but, for table extractions, it gives unusable data.
+Therefore Camelot is superior than PDF Plumber.
+Camelot gives sophisticated controls for data extraction specifically.
+Even though Camelot gives advanced control, we are still going to use pdf plumber as it provides basic extraction.
+
+## Cleaning up \n from a List of List 
+v1
+```py
+data = [
+    ["cell 1\nwith\nline breaks", "cell 2", "cell 3"],
+    ["cell 4", "cell 5\nwith\nline breaks", "cell 6"]
+]
+
+cleaned_data = [[cell.replace('\n', ' ') if isinstance(cell, str) else cell for cell in row] for row in data]
+```
+v2
+```py
+data = [
+    ["cell 1\nwith\nline breaks", "cell 2", "cell 3"],
+    ["cell 4", "cell 5\nwith\nline breaks", "cell 6"]
+]
+
+cleaned_data = []
+
+for row in data:
+    cleaned_row = []
+    for cell in row:
+        if isinstance(cell, str):
+            cleaned_row.append(cell.replace('\n', ' '))
+        else:
+            cleaned_row.append(cell)
+    cleaned_data.append(cleaned_row)
 ```
 
 # Requirements
