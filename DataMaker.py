@@ -4,7 +4,8 @@ import glob     # Finding files with extensions
 
 
 def main():
-    docx_file_list = getDocxFileList("test")
+    docx_file_dir = "test"
+    docx_file_list = getDocxFileList(docx_file_dir)
 
     for docx_file in docx_file_list:
 

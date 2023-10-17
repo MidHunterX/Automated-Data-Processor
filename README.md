@@ -24,14 +24,56 @@ for table in tree.iter(TABLE):
         for cell in row.iter(CELL):
             print ''.join(node.text for node in cell.iter(TEXT))
 ```
-## DOCX Module
+
+# Libraries Used
 Instead of Re-Inventing the wheel, let's use a premade module for simplicity.
 Let's follow the path of the people who went before.
+
+## DOCX Module
 ```
 pip install python-docx
 ```
+The python-docx library is one of the most popular and widely used libraries for working with DOCX (Microsoft Word) files in Python. It provides a comprehensive set of features for creating, modifying, and extracting information from DOCX files. For many use cases, it is indeed an excellent choice.
+The python-docx library is well-documented and has a strong user community, making it a reliable choice for most tasks involving DOCX files.
+
+## PDF Plumber
+To extract information from PDFs with a specific structure, you can use Python libraries such as PyPDF2, pdfplumber, or Camelot. PyPDF2 primarily extracts raw text and doesn't provide as much layout information as pdfplumber. Therefore PDF Plumber is the best choice here.
+```
+pip install pdfplumber
+```
+### PDF Plumber usage example
+```py
+import pdfplumber
+
+# Replace 'your_pdf.pdf' with the path to your PDF file.
+pdf_file = 'your_pdf.pdf'
+
+with pdfplumber.open(pdf_file) as pdf:
+    for page in pdf.pages:
+        text = page.extract_text()
+
+        # Check for the section headers and extract the content.
+        if "Institution Details" in text:
+            start = text.index("Institution Details")
+            end = text.index("Student Details")
+            institution_details = text[start:end]
+
+        if "Student Details" in text:
+            student_details = text[text.index("Student Details"):]
+
+# Print or process the extracted information.
+print("Institution Details:")
+print(institution_details)
+
+print("Student Details:")
+print(student_details)
+```
 
 # Requirements
-- [ ] Support for PDF and DOCX
-- [x] Collects required data
-- [ ] CSV export
+- [x] DOCX Parsing
+- [ ] PDF Parsing
+- [x] DOCX Data Extraction
+- [ ] PDF Data Extraction
+- [ ] Extracted Data to CSV conversion
+- [ ] Organizing processed files
+- [ ] Full process logging
