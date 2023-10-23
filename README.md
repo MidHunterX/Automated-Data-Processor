@@ -106,9 +106,11 @@ for row in data:
 
 # Requirements
 - [x] DOCX Parsing
-- [ ] PDF Parsing
+- [x] PDF Parsing
 - [x] DOCX Data Extraction
-- [ ] PDF Data Extraction
-- [ ] Extracted Data to CSV conversion
+- [x] PDF Data Extraction
+- [x] Extracted Data to CSV conversion
 - [ ] Organizing processed files
+- [ ] Separate unsupported files
+- [ ] Check for changes in document structure
 - [ ] Full process logging
