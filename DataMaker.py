@@ -9,7 +9,7 @@ def main():
     input_dir = "test"
     csv_file = "output.csv"
 
-    # ========================= PDF FILE PROCESSING ========================= #
+    # ------------------------------------------------- [ PDF FILE PROCESSING ]
 
     pdf_file_list = getPdfFileList(input_dir)
     if pdf_file_list:
@@ -17,12 +17,12 @@ def main():
             file_name = os.path.basename(pdf_file)
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsPdf(pdf_file)
-            printInstitution(institution)
             student_data = getStudentDetailsPdf(pdf_file)
             printInstitution(institution)
+            printStudentData(student_data)
             writeToCSV(csv_file, institution, student_data)
 
-    # ======================== DOCX FILE PROCESSING ======================== #
+    # ------------------------------------------------ [ DOCX FILE PROCESSING ]
 
     docx_file_list = getDocxFileList(input_dir)
     if docx_file_list:
@@ -30,8 +30,8 @@ def main():
             file_name = os.path.basename(docx_file)
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsDocx(docx_file)
-            printInstitution(institution)
             student_data = getStudentDetailsDocx(docx_file)
+            printInstitution(institution)
             printStudentData(student_data)
             writeToCSV(csv_file, institution, student_data)
 
@@ -74,6 +74,12 @@ def printStudentData(student_data):
 
 
 # ================================ FUNCTIONS ================================ #
+
+
+def countPdfPages(pdf_file):
+    with pdfplumber.open(pdf_file) as pdf:
+        page_count = len(pdf.pages)
+    return page_count
 
 
 def getStudentDetailsPdf(pdf_file):
