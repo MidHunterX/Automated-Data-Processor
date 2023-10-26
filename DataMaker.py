@@ -94,11 +94,11 @@ def getStudentDetailsPdf(pdf_file):
     }
     """
     with pdfplumber.open(pdf_file) as pdf:
+        data = {}
+        i = 0
         for page in pdf.pages:
             # Generate CSV list from PDF table
             table = page.extract_table()
-            data = {}
-            i = 0
             if table:
                 for row in table:
                     # Replace \n substring with space
@@ -117,8 +117,9 @@ def getStudentDetailsPdf(pdf_file):
                     branch = cleaned_row[5]
 
                     # Extracted data
-                    data[i] = name, standard, ifsc, acc_no, holder, branch
-                    i = i + 1
+                    if name:  # For avoiding empty rows
+                        data[i] = name, standard, ifsc, acc_no, holder, branch
+                        i = i + 1
     return data
 
 
