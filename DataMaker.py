@@ -12,8 +12,8 @@ def main():
     # ------------------------------------------------- [ PDF FILE PROCESSING ]
 
     pdf_file_list = getPdfFileList(input_dir)
-    if pdf_file_list:
-        for pdf_file in pdf_file_list:
+    for pdf_file in pdf_file_list:
+        if correctPdfFormat(pdf_file):
             file_name = os.path.basename(pdf_file)
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsPdf(pdf_file)
@@ -25,8 +25,8 @@ def main():
     # ------------------------------------------------ [ DOCX FILE PROCESSING ]
 
     docx_file_list = getDocxFileList(input_dir)
-    if docx_file_list:
-        for docx_file in docx_file_list:
+    for docx_file in docx_file_list:
+        if correctDocxFormat(docx_file):
             file_name = os.path.basename(docx_file)
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsDocx(docx_file)
@@ -76,10 +76,79 @@ def printStudentData(student_data):
 # ================================ FUNCTIONS ================================ #
 
 
-def countPdfPages(pdf_file):
-    with pdfplumber.open(pdf_file) as pdf:
-        page_count = len(pdf.pages)
-    return page_count
+def correctPdfFormat(pdf_file):
+    """
+    Returns True if PDF is in correct Format
+    """
+    flags = {
+        "Institution Heading": False,
+        "Institution Lines": False,
+        "Student Heading": False,
+        "Student Table": False
+    }
+    try:
+        with pdfplumber.open(pdf_file) as pdf:
+            for page in pdf.pages:
+
+                # ====== TEXT PARAGRAPH STARTS ====== #
+                text = page.extract_text()
+
+                # Check Heading: Institution Details
+                if "Institution Details" in text:
+                    flags["Institution Heading"] = True
+
+                    # Check Length: Institution Details
+                    start = text.index("Name of the Institution")
+                    end = text.index("Student Details")
+                    institution_details = text[start:end].splitlines()
+                    if len(institution_details) == 4:
+                        flags["Institution Lines"] = True
+
+                # Check Heading: Student Details
+                if "Student Details" in text:
+                    flags["Student Heading"] = True
+
+                # =========== TABLE STARTS =========== #
+                table = page.extract_table()
+
+                # Check Content: Student Table
+                if table:
+                    flags["Student Table"] = True
+    except ValueError:
+        pass
+
+    status = all(flags.values())
+    return status
+
+
+def correctDocxFormat(docx_file):
+    """
+    Returns True if DOCX is in correct Format
+    """
+    inside_institution_details = False
+    flags = {
+        "name": False,
+        "place": False,
+        "number": False,
+        "email": False,
+    }
+    doc = docx.Document(docx_file)
+    for paragraph in doc.paragraphs:
+        text = paragraph.text
+        if text.startswith("Institution Details"):
+            inside_institution_details = True
+        elif inside_institution_details:
+            if text.startswith("Name of the Institution"):
+                flags["name"] = True
+            if text.startswith("Place"):
+                flags["place"] = True
+            if text.startswith("Phone number"):
+                flags["number"] = True
+            if text.startswith("Email Id"):
+                flags["email"] = True
+
+    status = all(flags.values())
+    return status
 
 
 def getStudentDetailsPdf(pdf_file):
