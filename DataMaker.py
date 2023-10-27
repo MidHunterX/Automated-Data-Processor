@@ -12,6 +12,10 @@ def main():
     csv_file = "output.csv"
     output_dir = initIsoDir(input_dir)
 
+    # Renames all file into incremental numbers
+    # Separates unsupported file formats
+    preprocessFiles(input_dir)
+
     # ------------------------------------------------- [ PDF FILE PROCESSING ]
 
     pdf_file_list = getPdfFileList(input_dir)
@@ -373,6 +377,35 @@ def printStudentData(student_data):
         holder = value[4]
         branch = value[5]
         print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+
+
+def preprocessFiles(input_dir):
+    """
+    Renames files into numbers and
+    Moves Unsupported files into a separate directory
+    """
+    unsupported_dir = os.path.join(input_dir, "unsupported")
+    counter = 1
+
+    # Ensure the unsupported directory exists
+    if not os.path.exists(unsupported_dir):
+        os.makedirs(unsupported_dir)
+
+    for filename in os.listdir(input_dir):
+        file_path = os.path.join(input_dir, filename)
+
+        if os.path.isfile(file_path):
+            # Check if it's a PDF or DOCX file
+            if filename.lower().endswith(('.pdf', '.docx')):
+                base_extension = os.path.splitext(filename)[1]
+                new_name = f"{counter:03d}{base_extension}"
+                new_path = os.path.join(input_dir, new_name)
+                os.rename(file_path, new_path)
+                counter += 1
+            else:
+                # Move unsupported files to the 'unsupported' directory
+                unsupported_path = os.path.join(unsupported_dir, filename)
+                shutil.move(file_path, unsupported_path)
 
 
 # ============================= MAIN FUNCTION ============================== #
