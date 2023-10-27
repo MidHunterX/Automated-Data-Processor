@@ -164,7 +164,7 @@ def getStudentDetailsPdf(pdf_file):
     """
     with pdfplumber.open(pdf_file) as pdf:
         data = {}
-        i = 0
+        i = -1
         for page in pdf.pages:
             # Generate CSV list from PDF table
             table = page.extract_table()
@@ -189,6 +189,10 @@ def getStudentDetailsPdf(pdf_file):
                     if name:  # For avoiding empty rows
                         data[i] = name, standard, ifsc, acc_no, holder, branch
                         i = i + 1
+
+    # Removes unwanted Header data
+    data.pop(-1)
+
     return data
 
 
