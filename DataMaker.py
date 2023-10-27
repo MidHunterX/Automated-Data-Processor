@@ -3,11 +3,14 @@ import docx         # Docx parsing
 import csv          # CSV file manipulation
 import os           # Directory path support
 import glob         # Finding files with extensions
+import shutil       # Copying and Moving files
+import datetime     # ISO Date
 
 
 def main():
     input_dir = "test"
     csv_file = "output.csv"
+    output_dir = initIsoDir(input_dir)
 
     # ------------------------------------------------- [ PDF FILE PROCESSING ]
 
@@ -21,6 +24,7 @@ def main():
             printInstitution(institution)
             printStudentData(student_data)
             writeToCSV(csv_file, institution, student_data)
+            shutil.move(pdf_file, output_dir)
 
     # ------------------------------------------------ [ DOCX FILE PROCESSING ]
 
@@ -34,46 +38,18 @@ def main():
             printInstitution(institution)
             printStudentData(student_data)
             writeToCSV(csv_file, institution, student_data)
-
-
-# =============================== PROCEDURES ================================ #
-
-
-def writeToCSV(csv_file, institution, student_data):
-    """
-    Parameter: (csv_file, institution, student_data)
-    Returns: CSV File in working directory
-    """
-    with open(csv_file, mode="a", newline="") as file:
-        writer = csv.writer(file)
-        # Institution details
-        for value in institution.values():
-            writer.writerow([value])
-        # Student details
-        for row in student_data.values():
-            writer.writerow(row)
-
-
-def printInstitution(institution):
-    inst_name = institution["name"]
-    inst_place = institution["place"]
-    inst_number = institution["number"]
-    inst_email = institution["email"]
-    print(f"{inst_name},{inst_place},{inst_number},{inst_email}")
-
-
-def printStudentData(student_data):
-    for key, value in student_data.items():
-        name = value[0]
-        standard = value[1]
-        ifsc = value[2]
-        acc_no = value[3]
-        holder = value[4]
-        branch = value[5]
-        print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+            shutil.move(docx_file, output_dir)
 
 
 # ================================ FUNCTIONS ================================ #
+
+
+def initIsoDir(input_dir):
+    iso_date = datetime.date.today().isoformat()
+    directory_path = os.path.join(input_dir, iso_date)
+    if not os.path.exists(directory_path):
+        os.mkdir(directory_path)
+    return directory_path
 
 
 def correctPdfFormat(pdf_file):
@@ -361,6 +337,45 @@ def getStudentDetailsDocx(docx_file):
                 i = i + 1
     return data
 
+
+# =============================== PROCEDURES ================================ #
+
+
+def writeToCSV(csv_file, institution, student_data):
+    """
+    Parameter: (csv_file, institution, student_data)
+    Returns: CSV File in working directory
+    """
+    with open(csv_file, mode="a", newline="") as file:
+        writer = csv.writer(file)
+        # Institution details
+        for value in institution.values():
+            writer.writerow([value])
+        # Student details
+        for row in student_data.values():
+            writer.writerow(row)
+
+
+def printInstitution(institution):
+    inst_name = institution["name"]
+    inst_place = institution["place"]
+    inst_number = institution["number"]
+    inst_email = institution["email"]
+    print(f"{inst_name},{inst_place},{inst_number},{inst_email}")
+
+
+def printStudentData(student_data):
+    for key, value in student_data.items():
+        name = value[0]
+        standard = value[1]
+        ifsc = value[2]
+        acc_no = value[3]
+        holder = value[4]
+        branch = value[5]
+        print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+
+
+# ============================= MAIN FUNCTION ============================== #
 
 if __name__ == "__main__":
     main()

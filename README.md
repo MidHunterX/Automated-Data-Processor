@@ -82,7 +82,7 @@ Even though Camelot gives advanced control, we are still going to use pdf plumbe
 - [x] DOCX Data Extraction
 - [x] PDF Data Extraction
 - [x] Extracted Data to CSV conversion
-- [ ] Organizing processed files
+- [x] Organizing processed files
 - [x] Separate unsupported files
 - [x] Check for changes in document structure
 - [x] Full process logging
