@@ -75,34 +75,6 @@ Therefore Camelot is superior than PDF Plumber.
 Camelot gives sophisticated controls for data extraction specifically.
 Even though Camelot gives advanced control, we are still going to use pdf plumber as it provides basic extraction.
 
-## Cleaning up \n from a List of List 
-v1
-```py
-data = [
-    ["cell 1\nwith\nline breaks", "cell 2", "cell 3"],
-    ["cell 4", "cell 5\nwith\nline breaks", "cell 6"]
-]
-
-cleaned_data = [[cell.replace('\n', ' ') if isinstance(cell, str) else cell for cell in row] for row in data]
-```
-v2
-```py
-data = [
-    ["cell 1\nwith\nline breaks", "cell 2", "cell 3"],
-    ["cell 4", "cell 5\nwith\nline breaks", "cell 6"]
-]
-
-cleaned_data = []
-
-for row in data:
-    cleaned_row = []
-    for cell in row:
-        if isinstance(cell, str):
-            cleaned_row.append(cell.replace('\n', ' '))
-        else:
-            cleaned_row.append(cell)
-    cleaned_data.append(cleaned_row)
-```
 
 # Requirements
 - [x] DOCX Parsing
@@ -111,6 +83,27 @@ for row in data:
 - [x] PDF Data Extraction
 - [x] Extracted Data to CSV conversion
 - [ ] Organizing processed files
-- [ ] Separate unsupported files
-- [ ] Check for changes in document structure
-- [ ] Full process logging
+- [x] Separate unsupported files
+- [x] Check for changes in document structure
+- [x] Full process logging
+
+
+# Methodology
+
+## Class Data Conversion
+```py
+std_dataset = {
+    1: ["1", "i", "1st", "first", "one"],
+    2: ["2", "ii", "2nd", "second", "two"],
+    3: ["3", "iii", "3rd", "third", "three"],
+    4: ["4", "iv", "4th", "fourth", "four"],
+    5: ["5", "v", "5th", "fifth", "five"],
+    6: ["6", "vi", "6th", "sixth", "six"],
+    7: ["7", "vii", "7th", "seventh", "seven"],
+    8: ["8", "viii", "8th", "eighth", "eight"],
+    9: ["9", "ix", "9th", "nineth", "nine"],
+    10: ["10", "x", "10th", "tenth", "ten"],
+    11: ["11", "xi", "11th", "plus one", "+1", "plusone"],
+    12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
+}
+```
