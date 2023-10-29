@@ -5,6 +5,7 @@ import os           # Directory path support
 import glob         # Finding files with extensions
 import shutil       # Copying and Moving files
 import datetime     # ISO Date
+from collections import Counter     # Most Common Value
 
 
 def main():
@@ -16,6 +17,7 @@ def main():
     iso_date = datetime.date.today().isoformat()
     output_dir = initNestedDir(input_dir, iso_date)
     investigation_dir = initNestedDir(input_dir, "for checking")
+    ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
 
     # ----------------------------------------------------- [ VARS FOR REPORT ]
 
@@ -36,6 +38,11 @@ def main():
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsPdf(pdf_file)
             student_data = getStudentDetailsPdf(pdf_file)
+
+            ifsc_list = getStudentIfscList(student_data)
+            district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
+            print(f"District: {district}\n")
+
             printInstitution(institution)
             printStudentData(student_data)
 
@@ -59,6 +66,11 @@ def main():
             print(f"\n==== {file_name} ====")
             institution = getInstitutionDetailsDocx(docx_file)
             student_data = getStudentDetailsDocx(docx_file)
+
+            ifsc_list = getStudentIfscList(student_data)
+            district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
+            print(f"District: {district}\n")
+
             printInstitution(institution)
             printStudentData(student_data)
 
@@ -447,7 +459,88 @@ def preprocessFiles(input_dir):
                 shutil.move(file_path, unsupported_path)
 
 
+# ======================= DATA PROCESSING FUNCTIONS ======================== #
+
+def getStudentIfscList(student_data):
+    """
+    Parameter: Student Data from getStudentDetails()
+    Returns: Iterable List of IFSC code
+
+    ifsc = ["ifsc1", "ifsc2", "ifsc3", "ifsc4"]
+    """
+    i = 0
+    ifsc = []
+    for key, value in student_data.items():
+        ifsc.append(value[2])
+        i += 1
+    return ifsc
+
+
+def loadIfscDataset(csv_file):
+    """
+    Parameter: CSV Dataset from RazorPay
+    Returns: Dataset Dictionary loaded into memory
+
+    dataset[row['IFSC']] = {
+        'Bank': row['BANK'],
+        'Branch': row['BRANCH'],
+        'Address': row['ADDRESS'],
+        'District': row['DISTRICT'],
+        'State': row['STATE']
+    }
+    """
+    dataset = {}
+    with open(csv_file, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            dataset[row['IFSC']] = {
+                'Bank': row['BANK'],
+                'Branch': row['BRANCH'],
+                'Address': row['ADDRESS'],
+                'District': row['DISTRICT'],
+                'State': row['STATE']
+            }
+    return dataset
+
+
+def getDistrictFromIfsc(ifsc, ifsc_dataset):
+    """
+    Parameters: (ifsc_code, ifsc_dataset)
+    Returns: District as a String
+    """
+    ifsc_info = ifsc_dataset.get(ifsc)
+    if ifsc_info:
+        return ifsc_info['District']
+    else:
+        return "Unknown"
+
+
+def get_most_common_value(a_list):
+    """
+    Parameters: A List of Values
+    Returns: The most common value from list
+    """
+    count = Counter(a_list)
+    mostCommon = count.most_common(1)
+    return mostCommon[0][0]
+
+
+def guessDistrictFromIfscList(ifsc_list, ifsc_dataset):
+    """
+    Parameters: (ifsc_list, ifsc_dataset)
+    Returns: Guessed District as a String
+    """
+    district_list = []
+    # Create a list of Districts
+    for ifsc in ifsc_list:
+        district = getDistrictFromIfsc(ifsc, ifsc_dataset)
+        district_list.append(district)
+    # Finding the most occured District
+    return get_most_common_value(district_list)
+
+
 # ============================= MAIN FUNCTION ============================== #
+
 
 if __name__ == "__main__":
     main()
