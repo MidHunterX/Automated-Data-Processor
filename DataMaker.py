@@ -8,9 +8,20 @@ import datetime     # ISO Date
 
 
 def main():
-    input_dir = "test"
+
+    # ------------------------------------------------- [ INIT FILES AND DIRS ]
+
+    input_dir = "input"
     csv_file = "output.csv"
-    output_dir = initIsoDir(input_dir)
+    iso_date = datetime.date.today().isoformat()
+    output_dir = initNestedDir(input_dir, iso_date)
+    investigation_dir = initNestedDir(input_dir, "for checking")
+
+    # ----------------------------------------------------- [ VARS FOR REPORT ]
+
+    files_written = 0
+    for_checking_count = 0
+    incorrect_format_count = 0
 
     # Renames all file into incremental numbers
     # Separates unsupported file formats
@@ -27,8 +38,17 @@ def main():
             student_data = getStudentDetailsPdf(pdf_file)
             printInstitution(institution)
             printStudentData(student_data)
-            writeToCSV(csv_file, institution, student_data)
-            shutil.move(pdf_file, output_dir)
+
+            verification = input("Correct? (ret / n): ")
+            if verification == "":
+                writeToCSV(csv_file, institution, student_data)
+                shutil.move(pdf_file, output_dir)
+                files_written += 1
+            else:
+                shutil.move(pdf_file, investigation_dir)
+                for_checking_count += 1
+        else:
+            incorrect_format_count += 1
 
     # ------------------------------------------------ [ DOCX FILE PROCESSING ]
 
@@ -41,16 +61,33 @@ def main():
             student_data = getStudentDetailsDocx(docx_file)
             printInstitution(institution)
             printStudentData(student_data)
-            writeToCSV(csv_file, institution, student_data)
-            shutil.move(docx_file, output_dir)
+
+            # Enter to Confirm
+            verification = input("Correct? (ret / n): ")
+            if verification == "":
+                writeToCSV(csv_file, institution, student_data)
+                shutil.move(docx_file, output_dir)
+                files_written += 1
+            else:
+                shutil.move(docx_file, investigation_dir)
+                for_checking_count += 1
+        else:
+            incorrect_format_count += 1
+
+    # -------------------------------------------------------------- [ REPORT ]
+
+    print("Final Report")
+    print("------------")
+    print(f"Files Written \t : {files_written}")
+    print(f"For Checking \t : {for_checking_count}")
+    print(f"Format Issues \t : {incorrect_format_count}")
 
 
 # ================================ FUNCTIONS ================================ #
 
 
-def initIsoDir(input_dir):
-    iso_date = datetime.date.today().isoformat()
-    directory_path = os.path.join(input_dir, iso_date)
+def initNestedDir(input_dir, nest_name):
+    directory_path = os.path.join(input_dir, nest_name)
     if not os.path.exists(directory_path):
         os.mkdir(directory_path)
     return directory_path
@@ -365,10 +402,11 @@ def printInstitution(institution):
     inst_place = institution["place"]
     inst_number = institution["number"]
     inst_email = institution["email"]
-    print(f"{inst_name},{inst_place},{inst_number},{inst_email}")
+    print(f"{inst_name}\n{inst_place}\n{inst_number}\n{inst_email}")
 
 
 def printStudentData(student_data):
+    i = 1
     for key, value in student_data.items():
         name = value[0]
         standard = value[1]
@@ -376,7 +414,8 @@ def printStudentData(student_data):
         acc_no = value[3]
         holder = value[4]
         branch = value[5]
-        print(f"{name},{standard},{ifsc},{acc_no},{holder},{branch}")
+        print(f"{i}: {name},{standard},{ifsc},{acc_no},{holder},{branch}")
+        i += 1
 
 
 def preprocessFiles(input_dir):
