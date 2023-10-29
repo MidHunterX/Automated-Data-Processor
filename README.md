@@ -89,7 +89,10 @@ Even though Camelot gives advanced control, we are still going to use pdf plumbe
 
 
 # Data Analysis
+
 ## Class Data Conversion
+(best approach would be to check similarity or REGEXP)
+
 ```py
 std_dataset = {
     1: ["1", "i", "1st", "first", "one"],
@@ -104,10 +107,29 @@ std_dataset = {
     10: ["10", "x", "10th", "tenth", "ten"],
     11: ["11", "xi", "11th", "plus one", "+1", "plusone"],
     12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
+    13: ["1dc", "1stdc","1st dc"],
+    14: ["2dc", "2nddc","2nd dc"],
+    15: ["3dc", "3rddc","3rd dc"],
+    16: ["1pg", "1stpg","1st pg"],
+    17: ["2pg", "2ndpg","2nd pg"],
+    18: ["3pg", "3rdpg","3rd pg"],
 }
 ```
 
 ## District Recognition
+1. Read all IFSC Code
+2. Find District of all IFSC Code
+3. Make a list out of districts
+4. Find the most occuring value in the list
+5. Return the value
+
+```py
+def most_common(a_list):
+    from collections import Counter
+    count = Counter(a_list)
+    mostCommon = count.most_common(1)
+    return mostCommon[0][0]
+```
 
 # Database Design
 Tables:
