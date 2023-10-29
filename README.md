@@ -75,6 +75,8 @@ Therefore Camelot is superior than PDF Plumber.
 Camelot gives sophisticated controls for data extraction specifically.
 Even though Camelot gives advanced control, we are still going to use pdf plumber as it provides basic extraction.
 
+## RazorPay IFSC Dataset
+The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian Financial System Code (IFSC) information, provided by RazorPay, a leading payment gateway and financial services company. This dataset contains detailed information about IFSC codes, which are unique identifiers for individual bank branches in India. It includes data such as bank names, branch names, addresses, and other relevant details.
 
 # Requirements
 - [x] DOCX Parsing
