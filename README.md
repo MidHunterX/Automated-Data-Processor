@@ -111,6 +111,7 @@ std_dataset = {
 
 # Database Design
 Tables:
+
 Schools
     SchoolID (Primary Key)
     SchoolName
@@ -118,6 +119,18 @@ Schools
     District
     Phone
     Email
+
+```sql
+CREATE TABLE "Schools" (
+	"SchoolID"	INTEGER NOT NULL UNIQUE,
+	"SchoolName"	TEXT NOT NULL,
+	"District"	TEXT,
+	"Place"	TEXT,
+	"Phone"	TEXT,
+	"Email"	TEXT,
+	PRIMARY KEY("SchoolID" AUTOINCREMENT)
+);
+```
 
 Students
     StudentID (Primary Key)
@@ -128,6 +141,21 @@ Students
     AccNo
     AccHolder
     Branch
+
+```sql
+CREATE TABLE Students (
+	StudentID	INTEGER NOT NULL UNIQUE,
+	SchoolID INTEGER,
+	StudentName	TEXT NOT NULL,
+	Class	INTEGER NOT NULL,
+	IFSC	TEXT NOT NULL,
+	AccNo	TEXT NOT NULL,
+	AccHolder	TEXT NOT NULL,
+	Branch	TEXT NOT NULL,
+	PRIMARY KEY(StudentID AUTOINCREMENT),
+	FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID)
+);
+```
 
 ## ISO 3166-2 District Abbreviations
 ```
