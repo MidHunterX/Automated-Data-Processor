@@ -89,7 +89,6 @@ Even though Camelot gives advanced control, we are still going to use pdf plumbe
 
 
 # Data Analysis
-
 ## Class Data Conversion
 ```py
 std_dataset = {
@@ -110,7 +109,7 @@ std_dataset = {
 
 ## District Recognition
 
-## Database Design
+# Database Design
 Tables:
 Schools
     SchoolID (Primary Key)
@@ -123,9 +122,28 @@ Schools
 Students
     StudentID (Primary Key)
     SchoolID (Foreign Key referencing the Schools table)
-    StudentName
+    Name
     Class
     IFSC
     AccNo
     AccHolder
     Branch
+
+## ISO 3166-2 District Abbreviations
+```
+AL Alappuzha
+ER Ernakulam
+ID Idukki
+KN Kannur
+KS Kasargod
+KL Kollam
+KT Kottayam
+KZ Kozhikode
+MA Malappuram
+PL Palakkad
+PT Pathanamthitta
+TS Thrissur
+TV Thiruvananthapuram
+WA Wayanad
+```
+
