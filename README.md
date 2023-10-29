@@ -88,7 +88,7 @@ Even though Camelot gives advanced control, we are still going to use pdf plumbe
 - [x] Full process logging
 
 
-# Methodology
+# Data Analysis
 
 ## Class Data Conversion
 ```py
@@ -107,3 +107,25 @@ std_dataset = {
     12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
 }
 ```
+
+## District Recognition
+
+## Database Design
+Tables:
+Schools
+    SchoolID (Primary Key)
+    SchoolName
+    Place
+    District
+    Phone
+    Email
+
+Students
+    StudentID (Primary Key)
+    SchoolID (Foreign Key referencing the Schools table)
+    StudentName
+    Class
+    IFSC
+    AccNo
+    AccHolder
+    Branch
