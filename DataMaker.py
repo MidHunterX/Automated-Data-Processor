@@ -32,8 +32,6 @@ def main():
 
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
-        print(file_name)
-        print(file_extension)
         proceed = False
 
         if file_extension == "docx":
@@ -63,7 +61,7 @@ def main():
             printStudentData(student_data)
 
             # Enter to Confirm
-            verification = input("Correct? (ret / n): ")
+            verification = input("\nCorrect? (ret / n): ")
             if verification == "":
                 print("Marking as Correct.")
                 writeToCSV(csv_file, institution, student_data)
@@ -518,6 +516,15 @@ def loadIfscDataset(csv_file):
     return dataset
 
 
+def loadDistrictDataset():
+    district_list = [
+        "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasargod",
+        "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad",
+        "Pathanamthitta", "Thrissur", "Thiruvananthapuram", "Wayanad"
+    ]
+    return district_list
+
+
 def getDistrictFromIfsc(ifsc, ifsc_dataset):
     """
     Parameters: (ifsc_code, ifsc_dataset)
@@ -525,11 +532,8 @@ def getDistrictFromIfsc(ifsc, ifsc_dataset):
     """
     district = "Unknown"
     ifsc_info = ifsc_dataset.get(ifsc)
-    district_list = [
-        "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasargod",
-        "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad",
-        "Pathanamthitta", "Thrissur", "Thiruvananthapuram", "Wayanad"
-    ]
+    district_list = loadDistrictDataset()
+
     if ifsc_info:
         district = ifsc_info["District"]
 
