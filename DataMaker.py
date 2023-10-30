@@ -25,51 +25,37 @@ def main():
     for_checking_count = 0
     incorrect_format_count = 0
 
-    # Renames all file into incremental numbers
-    # Separates unsupported file formats
+    # ----------------------------------------------------- [ FILE PROCESSING ]
+
     preprocessFiles(input_dir)
+    file_list = getFileList(input_dir, [".docx", ".pdf"])
 
-    # ------------------------------------------------- [ PDF FILE PROCESSING ]
+    for file in file_list:
+        file_name, file_extension = os.path.basename(file).split(".")
+        print(file_name)
+        print(file_extension)
+        proceed = False
 
-    pdf_file_list = getPdfFileList(input_dir)
-    for pdf_file in pdf_file_list:
-        if correctPdfFormat(pdf_file):
-            file_name = os.path.basename(pdf_file)
-            print(f"\n==== {file_name} ====")
-            institution = getInstitutionDetailsPdf(pdf_file)
-            student_data = getStudentDetailsPdf(pdf_file)
+        if file_extension == "docx":
+            docx_file = file
+            if correctDocxFormat(docx_file):
+                proceed = True
+                print(f"\n==== {file_name}.{file_extension} ====")
+                institution = getInstitutionDetailsDocx(docx_file)
+                student_data = getStudentDetailsDocx(docx_file)
 
+        if file_extension == "pdf":
+            pdf_file = file
+            if correctPdfFormat(pdf_file):
+                proceed = True
+                print(f"\n==== {file_name}.{file_extension} ====")
+                institution = getInstitutionDetailsPdf(pdf_file)
+                student_data = getStudentDetailsPdf(pdf_file)
+
+        if proceed is True:
             ifsc_list = getStudentIfscList(student_data)
             district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
-            print(f"District: {district}\n")
-
-            printInstitution(institution)
-            printStudentData(student_data)
-
-            verification = input("Correct? (ret / n): ")
-            if verification == "":
-                writeToCSV(csv_file, institution, student_data)
-                shutil.move(pdf_file, output_dir)
-                files_written += 1
-            else:
-                shutil.move(pdf_file, investigation_dir)
-                for_checking_count += 1
-        else:
-            incorrect_format_count += 1
-
-    # ------------------------------------------------ [ DOCX FILE PROCESSING ]
-
-    docx_file_list = getDocxFileList(input_dir)
-    for docx_file in docx_file_list:
-        if correctDocxFormat(docx_file):
-            file_name = os.path.basename(docx_file)
-            print(f"\n==== {file_name} ====")
-            institution = getInstitutionDetailsDocx(docx_file)
-            student_data = getStudentDetailsDocx(docx_file)
-
-            ifsc_list = getStudentIfscList(student_data)
-            district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
-            print(f"District: {district}\n")
+            print(f"Possible District: {district}\n")
 
             student_data = normalizeStudentStd(student_data)
 
@@ -79,11 +65,13 @@ def main():
             # Enter to Confirm
             verification = input("Correct? (ret / n): ")
             if verification == "":
+                print("Marking as Correct.")
                 writeToCSV(csv_file, institution, student_data)
-                shutil.move(docx_file, output_dir)
+                shutil.move(file, output_dir)
                 files_written += 1
             else:
-                shutil.move(docx_file, investigation_dir)
+                print("Moving for further Investigation.")
+                shutil.move(file, investigation_dir)
                 for_checking_count += 1
         else:
             incorrect_format_count += 1
@@ -276,6 +264,29 @@ def getInstitutionDetailsPdf(pdf_file):
         "email": email_id
     }
     return data
+
+
+def getFileList(dir, extensions):
+    """
+    Parameters: (dir, extensions)
+        - dir: Directory Path
+        - extensions: List of File extensions
+    Returns: A list of file path.
+
+    file_list = [file1.ext1, file2.ext1, file3.ext2, file4.ext2]
+    """
+
+    file_list = []
+
+    if not isinstance(extensions, list):
+        ext = [extensions]
+
+    for ext in extensions:
+        supported_files = glob.glob(os.path.join(dir, f"*{ext}"))
+        for file in supported_files:
+            file_list = file_list + [file]
+
+    return file_list
 
 
 def getPdfFileList(dir):
