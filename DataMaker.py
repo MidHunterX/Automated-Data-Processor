@@ -71,6 +71,8 @@ def main():
             district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
             print(f"District: {district}\n")
 
+            student_data = normalizeStudentStd(student_data)
+
             printInstitution(institution)
             printStudentData(student_data)
 
@@ -461,6 +463,8 @@ def preprocessFiles(input_dir):
 
 # ======================= DATA PROCESSING FUNCTIONS ======================== #
 
+# ------------------------------------------------------ [ DISTRICT FROM IFSC ]
+
 def getStudentIfscList(student_data):
     """
     Parameter: Student Data from getStudentDetails()
@@ -555,6 +559,70 @@ def guessDistrictFromIfscList(ifsc_list, ifsc_dataset):
         district_list.append(district)
     # Finding the most occured District
     return get_most_common_value(district_list)
+
+
+# ------------------------------------------------- [ CLASS NUMBER CONVERSION ]
+
+
+def convertStdToNum(data):
+    """
+    Parameter: Student Standard / Class Number
+    Returns: Numeric Value if String
+    """
+    std_dataset = {
+        1: ["1", "i", "1st", "first", "one"],
+        2: ["2", "ii", "2nd", "second", "two"],
+        3: ["3", "iii", "3rd", "third", "three"],
+        4: ["4", "iv", "4th", "fourth", "four"],
+        5: ["5", "v", "5th", "fifth", "five"],
+        6: ["6", "vi", "6th", "sixth", "six"],
+        7: ["7", "vii", "7th", "seventh", "seven"],
+        8: ["8", "viii", "8th", "eighth", "eight"],
+        9: ["9", "ix", "9th", "nineth", "nine"],
+        10: ["10", "x", "10th", "tenth", "ten"],
+        11: ["11", "xi", "11th", "plus one", "+1", "plusone"],
+        12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
+        13: ["1dc", "1 dc", "ist dc", "i dc", "idc", "1stdc", "1st dc"],
+        14: ["2dc", "2 dc", "iind dc", "ii dc", "iidc", "2nddc", "2nd dc"],
+        15: ["3dc", "3 dc", "iiird dc", "iii dc", "iiidc", "3rddc", "3rd dc"],
+        16: ["1pg", "1 pg", "ist pg", "i pg", "ipg", "1stpg", "1st pg"],
+        17: ["2pg", "2 pg", "iind pg", "ii pg", "iipg", "2ndpg", "2nd pg"],
+    }
+    if isinstance(data, str):
+        data = data.lower()
+        for key, values in std_dataset.items():
+            for value in values:
+                if data == value:
+                    data = key
+    return data
+
+
+def normalizeStudentStd(student_data):
+    """
+    Parameter: Student Data from getStudentDetails()
+    Returns: A dictionary of tuples with corrected Student standard
+
+    data = {
+        0: (name, numeric_standard, ifsc, acc_no, holder, branch),
+        1: (name, numeric_standard, ifsc, acc_no, holder, branch),
+        2: (name, numeric_standard, ifsc, acc_no, holder, branch)
+    }
+    """
+    i = 0
+    data = {}
+    for key, value in student_data.items():
+        name = value[0]
+        standard = value[1]
+        ifsc = value[2]
+        acc_no = value[3]
+        holder = value[4]
+        branch = value[5]
+
+        # Extracted data
+        data[i] = name, convertStdToNum(standard), ifsc, acc_no, holder, branch
+        i = i + 1
+
+    return data
 
 
 # ============================= MAIN FUNCTION ============================== #
