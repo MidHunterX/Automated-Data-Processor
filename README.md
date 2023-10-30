@@ -109,12 +109,11 @@ std_dataset = {
     10: ["10", "x", "10th", "tenth", "ten"],
     11: ["11", "xi", "11th", "plus one", "+1", "plusone"],
     12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
-    13: ["1dc", "1stdc","1st dc"],
-    14: ["2dc", "2nddc","2nd dc"],
-    15: ["3dc", "3rddc","3rd dc"],
-    16: ["1pg", "1stpg","1st pg"],
-    17: ["2pg", "2ndpg","2nd pg"],
-    18: ["3pg", "3rdpg","3rd pg"],
+    13: ["1dc", "1 dc", "ist dc", "i dc", "idc", "1stdc", "1st dc"],
+    14: ["2dc", "2 dc", "iind dc", "ii dc", "iidc", "2nddc", "2nd dc"],
+    15: ["3dc", "3 dc", "iiird dc", "iii dc", "iiidc", "3rddc", "3rd dc"],
+    16: ["1pg", "1 pg", "ist pg", "i pg", "ipg", "1stpg", "1st pg"],
+    17: ["2pg", "2 pg", "iind pg", "ii pg", "iipg", "2ndpg", "2nd pg"],
 }
 ```
 
