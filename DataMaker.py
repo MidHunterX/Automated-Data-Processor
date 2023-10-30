@@ -1,4 +1,6 @@
+from sqlite3 import IntegrityError
 import pdfplumber   # PDF parsing
+import sqlite3      # SQLite DB
 import docx         # Docx parsing
 import csv          # CSV file manipulation
 import os           # Directory path support
@@ -14,10 +16,14 @@ def main():
 
     input_dir = "input"
     csv_file = "output.csv"
+    db_file = "test\\test.db"
+
     iso_date = datetime.date.today().isoformat()
     output_dir = initNestedDir(input_dir, iso_date)
     investigation_dir = initNestedDir(input_dir, "for checking")
+
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
+    district_user = getDistrictFromUser()
 
     # ----------------------------------------------------- [ VARS FOR REPORT ]
 
@@ -29,6 +35,10 @@ def main():
 
     preprocessFiles(input_dir)
     file_list = getFileList(input_dir, [".docx", ".pdf"])
+
+    # Open connection to Database
+    print("Connecting to Database")
+    conn = sqlite3.connect(db_file)
 
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
@@ -51,22 +61,40 @@ def main():
                 student_data = getStudentDetailsPdf(pdf_file)
 
         if proceed is True:
+            # Guessing District
             ifsc_list = getStudentIfscList(student_data)
-            district = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
-            print(f"Possible District: {district}\n")
+            district_guess = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
+            print(f"Possible District: {district_guess}")
 
+            # Deciding User District vs Guessed District
+            district = district_user
+            if district == "Unknown":
+                district = district_guess
+            print(f"Selected District: {district}")
+            print("")
+
+            # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
 
+            # Printing Final Data
             printInstitution(institution)
             printStudentData(student_data)
 
             # Enter to Confirm
             verification = input("\nCorrect? (ret / n): ")
+            print("")
             if verification == "":
                 print("Marking as Correct.")
-                writeToCSV(csv_file, institution, student_data)
-                shutil.move(file, output_dir)
-                files_written += 1
+                # Write to database
+                if writeToDB(conn, district, institution, student_data):
+                    print("Data Written Successfully!")
+                    writeToCSV(csv_file, institution, student_data)
+                    shutil.move(file, output_dir)
+                    files_written += 1
+                else:
+                    print("Rejected by Database")
+                    shutil.move(file, investigation_dir)
+                    for_checking_count += 1
             else:
                 print("Moving for further Investigation.")
                 shutil.move(file, investigation_dir)
@@ -74,8 +102,13 @@ def main():
         else:
             incorrect_format_count += 1
 
+    # Close Connection to Database
+    print("Closing DB")
+    conn.close()
+
     # -------------------------------------------------------------- [ REPORT ]
 
+    print("")
     print("Final Report")
     print("------------")
     print(f"Files Written \t : {files_written}")
@@ -84,6 +117,15 @@ def main():
 
 
 # ================================ FUNCTIONS ================================ #
+
+
+def loadDistrictDataset():
+    district_list = [
+        "Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha",
+        "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
+        "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasargod"
+    ]
+    return district_list
 
 
 def initNestedDir(input_dir, nest_name):
@@ -405,6 +447,25 @@ def getStudentDetailsDocx(docx_file):
 # =============================== PROCEDURES ================================ #
 
 
+def getDistrictFromUser():
+    try:
+        print("""
+         1: TVM,  2: KLM,  3: PTA,  4: ALP,  5: KTM,
+         6: IDK,  7: EKM,  8: TSR,  9: PKD, 10: MLP,
+        11: KKD, 12: WYD, 13: KNR, 14: KSD,  0: Unknown
+        """)
+        district_dataset = loadDistrictDataset()
+        district = "Unknown"
+        data = int(input("Enter District No: "))
+        data -= 1
+        if data <= 13 and data >= 0:
+            district = district_dataset[data]
+        return district
+
+    except ValueError:
+        return district
+
+
 def writeToCSV(csv_file, institution, student_data):
     """
     Parameter: (csv_file, institution, student_data)
@@ -514,15 +575,6 @@ def loadIfscDataset(csv_file):
                 'State': row['STATE']
             }
     return dataset
-
-
-def loadDistrictDataset():
-    district_list = [
-        "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasargod",
-        "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad",
-        "Pathanamthitta", "Thrissur", "Thiruvananthapuram", "Wayanad"
-    ]
-    return district_list
 
 
 def getDistrictFromIfsc(ifsc, ifsc_dataset):
@@ -638,6 +690,88 @@ def normalizeStudentStd(student_data):
         i = i + 1
 
     return data
+
+
+# ========================== DATABASE OPERATIONS =========================== #
+
+
+def writeToDB(conn, district, institution, student_data):
+    """
+    Arguments: (conn, district, institution, student_data)
+        conn: Connection to database.db using sqlite3.connect()
+        district: Name of District as String
+        institution: Institution data from getInstitutionDetails function
+        student_data: Student data from getStudentDetails function
+
+    Returns:
+        True: if inserted into DB successfully
+        False: if any errors are encountered
+    """
+    proceed = True
+
+    try:
+        cursor = conn.cursor()
+        print("connected!")
+
+        # Insert Institution
+        print("Executing School SQL")
+        inst_name = institution["name"]
+        inst_place = institution["place"]
+        inst_number = institution["number"]
+        inst_email = institution["email"]
+
+        schoolSQL = """
+        INSERT INTO Schools (
+            SchoolName,
+            District,
+            Place,
+            Phone,
+            Email
+        )
+        VALUES ( ?, ?, ?, ?, ?)
+        """
+        values = inst_name, district, inst_place, inst_number, inst_email
+        cursor.execute(schoolSQL, values)
+
+        # Get the auto-incremented SchoolID
+        school_id = cursor.lastrowid
+
+        # Insert Students
+        print("Executing Student SQL")
+        for key, value in student_data.items():
+            name = value[0]
+            standard = value[1]
+            ifsc = value[2]
+            acc_no = value[3]
+            holder = value[4]
+            branch = value[5]
+
+            studentSQL = """
+            INSERT INTO Students (
+                SchoolID,
+                StudentName,
+                Class,
+                IFSC,
+                AccNo,
+                AccHolder,
+                Branch
+            )
+            VALUES ( ?, ?, ?, ?, ?, ?, ?)
+            """
+            variables = school_id, name, standard, ifsc, acc_no, holder, branch
+            cursor.execute(studentSQL, variables)
+
+        print("Commiting Changes")
+        conn.commit()
+
+    except IntegrityError as e:
+        print(f"IntegrityError: {e}")
+        proceed = False
+    except Exception as e:
+        print(f"Error: {e}")
+        proceed = False
+
+    return proceed
 
 
 # ============================= MAIN FUNCTION ============================== #
