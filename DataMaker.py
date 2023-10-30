@@ -508,11 +508,24 @@ def getDistrictFromIfsc(ifsc, ifsc_dataset):
     Parameters: (ifsc_code, ifsc_dataset)
     Returns: District as a String
     """
+    district = "Unknown"
     ifsc_info = ifsc_dataset.get(ifsc)
+    district_list = [
+        "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasargod",
+        "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad",
+        "Pathanamthitta", "Thrissur", "Thiruvananthapuram", "Wayanad"
+    ]
     if ifsc_info:
-        return ifsc_info['District']
-    else:
-        return "Unknown"
+        district = ifsc_info["District"]
+
+        # If unrecognized district, check address
+        if district not in district_list:
+            for item in district_list:
+                address = ifsc_info["Address"]
+                if item.lower() in address.lower():
+                    district = item
+
+    return district
 
 
 def get_most_common_value(a_list):
