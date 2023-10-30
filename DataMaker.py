@@ -329,36 +329,6 @@ def getFileList(dir, extensions):
     return file_list
 
 
-def getPdfFileList(dir):
-    """
-    Parameters: Directory path
-    Returns: A list of files with pdf extension.
-
-    [file1.pdf, file2.pdf, file3.pdf]
-    """
-
-    pdf_files = glob.glob(os.path.join(dir, '*.pdf'))
-    pdf_list = []
-    for docx_file in pdf_files:
-        pdf_list = pdf_list + [docx_file]
-    return pdf_list
-
-
-def getDocxFileList(dir):
-    """
-    Parameters: Directory path
-    Returns: A list of files with docx extension.
-
-    [file1.docx, file2.docx, file3.docx]
-    """
-
-    docx_files = glob.glob(os.path.join(dir, '*.docx'))
-    docx_list = []
-    for docx_file in docx_files:
-        docx_list = docx_list + [docx_file]
-    return docx_list
-
-
 def getInstitutionDetailsDocx(docx_file):
     """
     Parameters: Document.docx file
