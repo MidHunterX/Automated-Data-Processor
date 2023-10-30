@@ -525,6 +525,11 @@ def getDistrictFromIfsc(ifsc, ifsc_dataset):
                 if item.lower() in address.lower():
                     district = item
 
+        # Normalize district data
+        for item in district_list:
+            if item.lower() == district.lower():
+                district = item
+
     return district
 
 
