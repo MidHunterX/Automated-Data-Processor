@@ -182,19 +182,21 @@ CREATE TABLE Students (
 
 ## ISO 3166-2 District Abbreviations
 ```
-AL Alappuzha
-ER Ernakulam
-ID Idukki
-KN Kannur
-KS Kasargod
-KL Kollam
-KT Kottayam
-KZ Kozhikode
-MA Malappuram
-PL Palakkad
-PT Pathanamthitta
-TS Thrissur
-TV Thiruvananthapuram
-WA Wayanad
+Local  ISO   District Name
+--------------------------------
+TVM    TV    Thiruvananthapuram
+KLM    KL    Kollam
+PTA    PT    Pathanamthitta
+ALP    AL    Alappuzha
+KTM    KT    Kottayam
+IDK    ID    Idukki
+EKM    ER    Ernakulam
+TSR    TS    Thrissur
+PKD    PL    Palakkad
+MLP    MA    Malappuram
+KKD    KZ    Kozhikode
+WYD    WA    Wayanad
+KNR    KN    Kannur
+KSD    KS    Kasargod
 ```
 
