@@ -607,23 +607,93 @@ def convertStdToNum(data):
     Returns: Numeric Value if String
     """
     std_dataset = {
-        1: ["1", "i", "1st", "first", "one"],
-        2: ["2", "ii", "2nd", "second", "two"],
-        3: ["3", "iii", "3rd", "third", "three"],
-        4: ["4", "iv", "4th", "fourth", "four"],
-        5: ["5", "v", "5th", "fifth", "five"],
-        6: ["6", "vi", "6th", "sixth", "six"],
-        7: ["7", "vii", "7th", "seventh", "seven"],
-        8: ["8", "viii", "8th", "eighth", "eight"],
-        9: ["9", "ix", "9th", "nineth", "nine"],
-        10: ["10", "x", "10th", "tenth", "ten"],
-        11: ["11", "xi", "11th", "plus one", "+1", "plusone"],
-        12: ["12", "xii", "12th", "plus two", "+2", "plustwo"],
-        13: ["1dc", "1 dc", "ist dc", "i dc", "idc", "1stdc", "1st dc"],
-        14: ["2dc", "2 dc", "iind dc", "ii dc", "iidc", "2nddc", "2nd dc"],
-        15: ["3dc", "3 dc", "iiird dc", "iii dc", "iiidc", "3rddc", "3rd dc"],
-        16: ["1pg", "1 pg", "ist pg", "i pg", "ipg", "1stpg", "1st pg"],
-        17: ["2pg", "2 pg", "iind pg", "ii pg", "iipg", "2ndpg", "2nd pg"],
+        1: [
+            "1", "one",
+            "i",
+            "1st", "first"
+        ],
+        2: [
+            "2", "two"
+            "11", "ii",
+            "2nd", "second"
+        ],
+        3: [
+            "3", "three",
+            "111", "iii",
+            "3rd", "third"
+        ],
+        4: [
+            "4", "four",
+            "1v", "iv",
+            "4th", "fourth"
+        ],
+        5: [
+            "5", "five",
+            "v",
+            "5th", "fifth",
+        ],
+        6: [
+            "6", "six",
+            "v1", "vi",
+            "6th", "sixth",
+        ],
+        7: [
+            "7", "seven",
+            "v11", "vii",
+            "7th", "seventh",
+        ],
+        8: [
+            "8", "eight",
+            "v111", "viii",
+            "8th", "eighth",
+        ],
+        9: [
+            "9", "nine",
+            "1x", "ix",
+            "9th", "nineth",
+        ],
+        10: [
+            "10", "ten",
+            "x",
+            "10th", "tenth",
+        ],
+        11: [
+            "11",
+            "x1", "xi",
+            "11th",
+            "plus one", "plusone" "+1",
+        ],
+        12: [
+            "12",
+            "x11", "xii",
+            "12th",
+            "plus two", "plustwo" "+2",
+        ],
+        13: [
+            "1 dc", "1dc",
+            "i dc", "idc",
+            "ist dc", "1stdc", "1st dc"
+        ],
+        14: [
+            "2 dc", "2dc",
+            "ii dc", "iidc",
+            "iind dc", "2nddc", "2nd dc"
+        ],
+        15: [
+            "3 dc", "3dc",
+            "iii dc", "iiidc",
+            "iiird dc", "3rddc", "3rd dc"
+        ],
+        16: [
+            "1 pg", "1pg",
+            "i pg", "ipg",
+            "ist pg", "1st pg", "1stpg"
+        ],
+        17: [
+            "2 pg", "2pg",
+            "ii pg", "iipg",
+            "iind pg", "2ndpg", "2nd pg"
+        ],
     }
     if isinstance(data, str):
         data = data.lower()
