@@ -66,8 +66,10 @@ The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian
 - No need for file renaming when reprocessing
 - Steps are needeed as Investigating faulty files are an iterative process.
 - Writing to database is done after iterative checking is done.
+- Functions for each filetypes reduces flexibility
 
 # Further Requirements
+- [ ] Abstract correctDocxFormat(docx_file) and correctPdfFormat(pdf_file)
 - [ ] Step by step processing
 - [ ] Step 1: Filename Renaming
     - [ ] Step 1.1: Get all filenames in directory
