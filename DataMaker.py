@@ -33,32 +33,22 @@ def main():
 
     # ----------------------------------------------------- [ FILE PROCESSING ]
 
-    preprocessFiles(input_dir)
+    # preprocessFiles(input_dir)
     file_list = getFileList(input_dir, [".docx", ".pdf"])
 
     # Open connection to Database
-    print("Connecting to Database")
-    conn = sqlite3.connect(db_file)
+    # print("Connecting to Database")
+    # conn = sqlite3.connect(db_file)
 
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
         proceed = False
 
-        if file_extension == "docx":
-            docx_file = file
-            if correctDocxFormat(docx_file):
-                proceed = True
-                print(f"\n==== {file_name}.{file_extension} ====")
-                institution = getInstitutionDetailsDocx(docx_file)
-                student_data = getStudentDetailsDocx(docx_file)
-
-        if file_extension == "pdf":
-            pdf_file = file
-            if correctPdfFormat(pdf_file):
-                proceed = True
-                print(f"\n==== {file_name}.{file_extension} ====")
-                institution = getInstitutionDetailsPdf(pdf_file)
-                student_data = getStudentDetailsPdf(pdf_file)
+        if correctFormat(file):
+            proceed = True
+            print(f"\n==== {file_name}.{file_extension} ====")
+            institution = getInstitutionDetails(file)
+            student_data = getStudentDetails(file)
 
         if proceed is True:
             # Guessing District
@@ -85,16 +75,18 @@ def main():
             print("")
             if verification == "":
                 print("Marking as Correct.")
+                shutil.move(file, output_dir)
+                files_written += 1
                 # Write to database
-                if writeToDB(conn, district, institution, student_data):
-                    print("Data Written Successfully!")
-                    writeToCSV(csv_file, institution, student_data)
-                    shutil.move(file, output_dir)
-                    files_written += 1
-                else:
-                    print("Rejected by Database")
-                    shutil.move(file, investigation_dir)
-                    for_checking_count += 1
+                # if writeToDB(conn, district, institution, student_data):
+                #     print("Data Written Successfully!")
+                #     writeToCSV(csv_file, institution, student_data)
+                #     shutil.move(file, output_dir)
+                #     files_written += 1
+                # else:
+                #     print("Rejected by Database")
+                #     shutil.move(file, investigation_dir)
+                #     for_checking_count += 1
             else:
                 print("Moving for further Investigation.")
                 shutil.move(file, investigation_dir)
@@ -103,8 +95,8 @@ def main():
             incorrect_format_count += 1
 
     # Close Connection to Database
-    print("Closing DB")
-    conn.close()
+    # print("Closing DB")
+    # conn.close()
 
     # -------------------------------------------------------------- [ REPORT ]
 
@@ -411,6 +403,72 @@ def getStudentDetailsDocx(docx_file):
                 # Extracted data
                 data[i] = name, standard, ifsc, acc_no, holder, branch
                 i = i + 1
+    return data
+
+
+def getInstitutionDetails(file):
+    """
+    Parameters: Supported File
+    Returns: Dictionary of Institution Details
+
+    data = {
+        "name": name_of_institution,
+        "place": place,
+        "number": phone_number,
+        "email": email_id
+    }
+    """
+    file_name, file_extension = os.path.basename(file).split(".")
+
+    if file_extension == "docx":
+        docx_file = file
+        data = getInstitutionDetailsDocx(docx_file)
+
+    if file_extension == "pdf":
+        pdf_file = file
+        data = getInstitutionDetailsPdf(pdf_file)
+
+    return data
+
+
+def getStudentDetails(file):
+    """
+    Parameter: Supported File
+    Returns: A dictionary of tuples with Student details
+
+    data = {
+        0: (name, standard, ifsc, acc_no, holder, branch),
+        1: (name, standard, ifsc, acc_no, holder, branch),
+        2: (name, standard, ifsc, acc_no, holder, branch)
+    }
+    """
+    file_name, file_extension = os.path.basename(file).split(".")
+
+    if file_extension == "docx":
+        docx_file = file
+        data = getStudentDetailsDocx(docx_file)
+
+    if file_extension == "pdf":
+        pdf_file = file
+        data = getStudentDetailsPdf(pdf_file)
+
+    return data
+
+
+def correctFormat(file):
+    """
+    Returns True if file is in correct Format
+    """
+    file_name, file_extension = os.path.basename(file).split(".")
+
+    if file_extension == "docx":
+        docx_file = file
+        data = correctDocxFormat(docx_file)
+
+    if file_extension == "pdf":
+        pdf_file = file
+        data = correctPdfFormat(pdf_file)
+
     return data
 
 
