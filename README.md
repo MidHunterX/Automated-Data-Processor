@@ -89,6 +89,18 @@ The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian
 - [x] Check for changes in document structure
 - [x] Full process logging
 
+# Further Requirements
+- [ ] Step by step processing
+- [ ] Step 1: Filename Renaming
+    - [ ] Step 1.1: Get all filenames in directory
+    - [ ] Step 1.2: For each filename change to incremental numbers
+- [ ] Step 2: Form checking and sorting
+    - [ ] Step 2.1: Get list of all files
+    - [ ] Step 2.2: For each file, Separate out unsupported files
+    - [ ] Step 2.3: For each file, Check the file structure
+    - [ ] Step 2.4: Separate out each well structured file
+    - [ ] Step 2.5: Separate out suspicious files for investigation
+- [ ] Step 3: Form to database writing
 
 # Data Analysis
 
