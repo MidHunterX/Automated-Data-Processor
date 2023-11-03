@@ -154,19 +154,21 @@ Students
     AccNo
     AccHolder
     Branch
+    Verified
 
 ```sql
 CREATE TABLE Students (
-	StudentID	INTEGER NOT NULL UNIQUE,
-	SchoolID INTEGER,
-	StudentName	TEXT NOT NULL,
-	Class	INTEGER NOT NULL,
-	IFSC	TEXT NOT NULL,
-	AccNo	TEXT NOT NULL,
-	AccHolder	TEXT NOT NULL,
-	Branch	TEXT NOT NULL,
-	PRIMARY KEY(StudentID AUTOINCREMENT),
-	FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID)
+    StudentID   INTEGER NOT NULL UNIQUE,
+    SchoolID    INTEGER REFERENCES Schools (SchoolID),
+    StudentName TEXT    NOT NULL,
+    Class       INTEGER NOT NULL,
+    IFSC        TEXT    NOT NULL,
+    AccNo       TEXT    NOT NULL UNIQUE,
+    AccHolder   TEXT    NOT NULL,
+    Branch      TEXT    NOT NULL,
+    Verified    TEXT    NOT NULL DEFAULT (False),
+    PRIMARY KEY (StudentID AUTOINCREMENT),
+    FOREIGN KEY (SchoolID) REFERENCES Schools (SchoolID)
 );
 ```
 
