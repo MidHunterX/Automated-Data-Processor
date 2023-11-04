@@ -702,64 +702,67 @@ def convertStdToNum(data):
     Parameter: Student Standard / Class Number
     Returns: Numeric Value if String
     """
+    data = str(data)
+    data = data.strip().lower()
+
     std_dataset = {
         1: [
             "1", "one",
-            "1a", "1b", "1c", "1d",
+            "1a", "1b", "1c", "1d", "1e",
             "i",
             "1st", "first"
         ],
         2: [
             "2", "two"
-            "2a", "2b", "2c", "2d",
+            "2a", "2b", "2c", "2d", "2e",
             "11", "ii",
             "2nd", "second"
         ],
         3: [
             "3", "three",
-            "3a", "3b", "3c", "3d",
+            "3a", "3b", "3c", "3d", "3e",
             "111", "iii",
             "3rd", "third"
         ],
         4: [
             "4", "four",
-            "4a", "4b", "4c", "4d",
+            "4a", "4b", "4c", "4d", "4e",
             "1v", "iv",
             "4th", "fourth"
         ],
         5: [
             "5", "five",
-            "5a", "5b", "5c", "5d",
+            "5a", "5b", "5c", "5d", "5e",
             "v",
             "5th", "fifth",
         ],
         6: [
             "6", "six",
-            "6a", "6b", "6c", "6d",
+            "6a", "6b", "6c", "6d", "6e",
             "v1", "vi",
             "6th", "sixth",
         ],
         7: [
             "7", "seven",
-            "7a", "7b", "7c", "7d",
+            "7a", "7b", "7c", "7d", "7e",
             "v11", "vii",
             "7th", "seventh",
         ],
         8: [
             "8", "eight",
-            "8a", "8b", "8c", "8d",
+            "8a", "8b", "8c", "8d", "8e",
             "v111", "viii",
             "8th", "eighth",
         ],
         9: [
             "9", "nine",
-            "9a", "9b", "9c", "9d",
+            "9a", "9b", "9c", "9d", "9e",
             "1x", "ix",
             "9th", "nineth",
         ],
         10: [
             "10", "ten",
-            "10a", "10b", "10c", "10d",
+            "10a", "10b", "10c", "10d", "10e",
             "x",
             "10th", "tenth",
         ],
