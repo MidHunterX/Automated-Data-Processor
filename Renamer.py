@@ -1,4 +1,4 @@
-from DataMaker import preprocessFiles
+from Processor import preprocessFiles
 
 
 input_dir = "input"
