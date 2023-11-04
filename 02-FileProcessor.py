@@ -31,7 +31,10 @@ def main():
 
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
+
+        # Flags
         proceed = False
+        valid_std = False
 
         # Check for Formatting issues
         print(f"\n==== {file_name}.{file_extension} ====")
@@ -58,13 +61,22 @@ def main():
             # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
 
+            # Validating Student Data
+            if isValidStudentStd(student_data):
+                valid_std = True
+
             # Printing Final Data
             printInstitution(institution)
             printStudentData(student_data)
 
-            # Enter to Confirm
-            verification = input("\nCorrect? (ret / n): ")
-            print("")
+            # Enter to Confirm only if Student Class Valid
+            if valid_std is True:
+                verification = input("\nCorrect? (ret / n): ")
+                print("")
+            else:
+                # Moves to investigation_dir for checking
+                verification = "n"
+
             if verification == "":
                 print("Marking as Correct.")
                 # Creating district directory
@@ -824,6 +836,24 @@ def normalizeStudentStd(student_data):
         i = i + 1
 
     return data
+
+
+def isValidStudentStd(student_data):
+    """
+    Parameter: Student Data from getStudentDetails()
+    Returns: Boolean Value (True / False)
+    """
+    data = []
+    for key, value in student_data.items():
+        standard = value[1]
+        # Extracted data
+        standard = convertStdToNum(standard)
+        if type(standard) is int:
+            data.append(True)
+        else:
+            data.append(False)
+
+    return all(data)
 
 
 # ========================== DATABASE OPERATIONS =========================== #
