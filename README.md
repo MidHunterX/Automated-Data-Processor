@@ -67,19 +67,29 @@ The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian
 - Steps are needeed as Investigating faulty files are an iterative process.
 - Writing to database is done after iterative checking is done.
 - Functions for each filetypes reduces flexibility
+- District Recognition checking from top to bottom misses Kollam if Unknown
+```
+Bank,IOBA0001851,THANKASERY,KOLLAM,KOLLAM,KERALA,THIRUVANANTHAPURAM,2464429,true,true,KOLLAM,IN-KL
+```
 
 # Further Requirements
-- [ ] Abstract correctDocxFormat(docx_file) and correctPdfFormat(pdf_file)
-- [ ] Step by step processing
-- [ ] Step 1: Filename Renaming
-    - [ ] Step 1.1: Get all filenames in directory
-    - [ ] Step 1.2: For each filename change to incremental numbers
-- [ ] Step 2: Form checking and sorting
-    - [ ] Step 2.1: Get list of all files
-    - [ ] Step 2.2: For each file, Separate out unsupported files
-    - [ ] Step 2.3: For each file, Check the file structure
-    - [ ] Step 2.4: Separate out each well structured file
-    - [ ] Step 2.5: Separate out suspicious files for investigation
+- [ ] Overhaul District recognition algorithm
+    - [ ] Get record from RBI Dataset
+    - [ ] Convert CSV record to List
+    - [ ] Get most frequently used (mfu) data
+    - [ ] Do comparison searching to mfu data with District Dataset
+    - [ ] Return First match
+- [x] Abstract correctDocxFormat(docx_file) and correctPdfFormat(pdf_file)
+- [x] Step by step processing
+- [x] Step 1: Filename Renaming
+    - [x] Step 1.1: Get all filenames in directory
+    - [x] Step 1.2: For each filename change to incremental numbers
+- [x] Step 2: Form checking and sorting
+    - [x] Step 2.1: Get list of all files
+    - [x] Step 2.2: For each file, Separate out unsupported files
+    - [x] Step 2.3: For each file, Check the file structure
+    - [x] Step 2.4: Separate out each well structured file
+    - [x] Step 2.5: Separate out suspicious files for investigation
 - [ ] Step 3: Form to database writing
 
 # Data Analysis
@@ -123,6 +133,16 @@ def most_common(a_list):
     mostCommon = count.most_common(1)
     return mostCommon[0][0]
 ```
+
+## District Recognition Algorithm 2.0
+1. Store all IFSC Code into a List
+2. For each IFSC Code, get CSV Record from RBI Dataset
+3. Convert CSV Record into a List
+4. Get Most Recurring Value (MRV) of the Record List
+5. Compare Each MRV with District Dataset
+6. Return first matching district for each IFSC Code
+7. Store all return value into a list
+8. Get (MRV) of the Return Value List
 
 # Database Design
 Tables:
