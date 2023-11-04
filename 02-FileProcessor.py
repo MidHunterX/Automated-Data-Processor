@@ -91,8 +91,8 @@ def main():
 
 def loadDistrictDataset():
     district_list = [
-        "Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha",
-        "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
+        "Thiruvananthapuram", "Trivandrum", "Kollam", "Pathanamthitta",
+        "Alappuzha", "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
         "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasargod"
     ]
     return district_list
@@ -456,9 +456,11 @@ def correctFormat(file):
 def getDistrictFromUser():
     try:
         print("""
-         1: TVM,  2: KLM,  3: PTA,  4: ALP,  5: KTM,
-         6: IDK,  7: EKM,  8: TSR,  9: PKD, 10: MLP,
-        11: KKD, 12: WYD, 13: KNR, 14: KSD,  0: Unknown
+        1: TVM    6: IDK   11: KKD
+        2: KLM    7: EKM   12: WYD
+        3: PTA    8: TSR   13: KNR
+        4: ALP    9: PKD   14: KSD
+        5: KTM   10: MLP    0: Unknown
         """)
         district_dataset = loadDistrictDataset()
         district = "Unknown"
