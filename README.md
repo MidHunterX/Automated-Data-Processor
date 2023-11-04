@@ -69,6 +69,7 @@ The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian
 - Functions for each filetypes reduces flexibility
 - District Recognition checking from top to bottom misses Kollam if Unknown
 ```
+BANK,IFSC,BRANCH,CENTRE,DISTRICT,STATE,ADDRESS,CONTACT,IMPS,RTGS,CITY,ISO3166,NEFT,MICR,UPI,SWIFT
 Bank,IOBA0001851,THANKASERY,KOLLAM,KOLLAM,KERALA,THIRUVANANTHAPURAM,2464429,true,true,KOLLAM,IN-KL
 ```
 
