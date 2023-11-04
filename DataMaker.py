@@ -1,12 +1,10 @@
 from sqlite3 import IntegrityError
 import pdfplumber   # PDF parsing
-import sqlite3      # SQLite DB
 import docx         # Docx parsing
 import csv          # CSV file manipulation
 import os           # Directory path support
 import glob         # Finding files with extensions
 import shutil       # Copying and Moving files
-import datetime     # ISO Date
 from collections import Counter     # Most Common Value
 
 
@@ -15,11 +13,6 @@ def main():
     # ------------------------------------------------- [ INIT FILES AND DIRS ]
 
     input_dir = "input"
-    csv_file = "output.csv"
-    db_file = "test\\test.db"
-
-    iso_date = datetime.date.today().isoformat()
-    output_dir = initNestedDir(input_dir, iso_date)
     investigation_dir = initNestedDir(input_dir, "for checking")
 
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
@@ -33,24 +26,22 @@ def main():
 
     # ----------------------------------------------------- [ FILE PROCESSING ]
 
-    # preprocessFiles(input_dir)
     file_list = getFileList(input_dir, [".docx", ".pdf"])
-
-    # Open connection to Database
-    # print("Connecting to Database")
-    # conn = sqlite3.connect(db_file)
 
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
         proceed = False
 
+        # Check for Formatting issues
         if correctFormat(file):
             proceed = True
             print(f"\n==== {file_name}.{file_extension} ====")
             institution = getInstitutionDetails(file)
             student_data = getStudentDetails(file)
 
+        # If Correct format, proceed
         if proceed is True:
+
             # Guessing District
             ifsc_list = getStudentIfscList(student_data)
             district_guess = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
@@ -60,8 +51,7 @@ def main():
             district = district_user
             if district == "Unknown":
                 district = district_guess
-            print(f"Selected District: {district}")
-            print("")
+            print(f"Selected District: {district}\n")
 
             # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
@@ -75,28 +65,16 @@ def main():
             print("")
             if verification == "":
                 print("Marking as Correct.")
+                # Creating district directory
+                output_dir = initNestedDir(input_dir, district)
                 shutil.move(file, output_dir)
                 files_written += 1
-                # Write to database
-                # if writeToDB(conn, district, institution, student_data):
-                #     print("Data Written Successfully!")
-                #     writeToCSV(csv_file, institution, student_data)
-                #     shutil.move(file, output_dir)
-                #     files_written += 1
-                # else:
-                #     print("Rejected by Database")
-                #     shutil.move(file, investigation_dir)
-                #     for_checking_count += 1
             else:
                 print("Moving for further Investigation.")
                 shutil.move(file, investigation_dir)
                 for_checking_count += 1
         else:
             incorrect_format_count += 1
-
-    # Close Connection to Database
-    # print("Closing DB")
-    # conn.close()
 
     # -------------------------------------------------------------- [ REPORT ]
 
