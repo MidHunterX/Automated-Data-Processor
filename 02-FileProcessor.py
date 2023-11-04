@@ -582,9 +582,11 @@ def loadIfscDataset(csv_file):
     dataset[row['IFSC']] = {
         'Bank': row['BANK'],
         'Branch': row['BRANCH'],
-        'Address': row['ADDRESS'],
+        'Centre': row['CENTRE'],
         'District': row['DISTRICT'],
-        'State': row['STATE']
+        'State': row['STATE'],
+        'Address': row['ADDRESS'],
+        'City': row['CITY'],
     }
     """
     dataset = {}
@@ -594,9 +596,11 @@ def loadIfscDataset(csv_file):
             dataset[row['IFSC']] = {
                 'Bank': row['BANK'],
                 'Branch': row['BRANCH'],
-                'Address': row['ADDRESS'],
+                'Centre': row['CENTRE'],
                 'District': row['DISTRICT'],
-                'State': row['STATE']
+                'State': row['STATE'],
+                'Address': row['ADDRESS'],
+                'City': row['CITY'],
             }
     return dataset
 
@@ -611,19 +615,37 @@ def getDistrictFromIfsc(ifsc, ifsc_dataset):
     district_list = loadDistrictDataset()
 
     if ifsc_info:
-        district = ifsc_info["District"]
 
-        # If unrecognized district, check address
+        # District Finder (Initial Algorithm)
+        district = ifsc_info["District"]
+        # Return correct item from district data
+        for item in district_list:
+            if item.lower() == district.lower():
+                district = item
+
+        # District Finder v2.0 (New Algorithm)
+        if district not in district_list:
+            value_list = []
+            for value in ifsc_info.values():
+                value_list.append(value)
+            district = get_most_common_value(value_list)
+
+            # Return correct item from district data
+            for item in district_list:
+                if item.lower() == district.lower():
+                    district = item
+
+        # District Finder v1.0 (Fallback)
         if district not in district_list:
             for item in district_list:
                 address = ifsc_info["Address"]
                 if item.lower() in address.lower():
                     district = item
 
-        # Normalize district data
-        for item in district_list:
-            if item.lower() == district.lower():
-                district = item
+            # Return correct item from district data
+            for item in district_list:
+                if item.lower() == district.lower():
+                    district = item
 
     return district
 
@@ -648,8 +670,16 @@ def guessDistrictFromIfscList(ifsc_list, ifsc_dataset):
     for ifsc in ifsc_list:
         district = getDistrictFromIfsc(ifsc, ifsc_dataset)
         district_list.append(district)
+
     # Finding the most occured District
-    return get_most_common_value(district_list)
+    district = get_most_common_value(district_list)
+
+    # If District is Unknown, log data for user to verify
+    if district == "Unknown":
+        print("Couldn't decide District :(")
+        print(f"Guess Data: {district_list}\n")
+
+    return district
 
 
 # ------------------------------------------------- [ CLASS NUMBER CONVERSION ]
