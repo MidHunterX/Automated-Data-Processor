@@ -14,6 +14,7 @@ def main():
 
     input_dir = "input"
     investigation_dir = initNestedDir(input_dir, "for checking")
+    formatting_dir = initNestedDir(input_dir, "formatting issues")
 
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
     district_user = getDistrictFromUser()
@@ -33,9 +34,10 @@ def main():
         proceed = False
 
         # Check for Formatting issues
+        print(f"\n==== {file_name}.{file_extension} ====")
+
         if correctFormat(file):
             proceed = True
-            print(f"\n==== {file_name}.{file_extension} ====")
             institution = getInstitutionDetails(file)
             student_data = getStudentDetails(file)
 
@@ -74,6 +76,10 @@ def main():
                 shutil.move(file, investigation_dir)
                 for_checking_count += 1
         else:
+            # Enter to Confirm
+            verification = input("Proceed? (ret)")
+            if verification == "":
+                shutil.move(file, formatting_dir)
             incorrect_format_count += 1
 
     # -------------------------------------------------------------- [ REPORT ]
@@ -81,9 +87,9 @@ def main():
     print("")
     print("Final Report")
     print("------------")
-    print(f"Files Written \t : {files_written}")
-    print(f"For Checking \t : {for_checking_count}")
-    print(f"Format Issues \t : {incorrect_format_count}")
+    print(f"Files Accepted \t\t : {files_written}")
+    print(f"For Checking \t\t : {for_checking_count}")
+    print(f"Formatting Issues \t : {incorrect_format_count}")
 
 
 # ================================ FUNCTIONS ================================ #
@@ -175,6 +181,16 @@ def correctDocxFormat(docx_file):
                 flags["number"] = True
             if text.startswith("Email Id"):
                 flags["email"] = True
+
+    # Logs
+    if flags["name"] is False:
+        print("Heading not found: Name of the Institution")
+    if flags["place"] is False:
+        print("Entry not found: Place")
+    if flags["number"] is False:
+        print("Entry not found: Number")
+    if flags["email"] is False:
+        print("Entry not found: Email")
 
     status = all(flags.values())
     return status
