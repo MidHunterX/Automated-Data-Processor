@@ -815,6 +815,23 @@ def convertStdToNum(data):
     return data
 
 
+def convertParagraphToLine(text):
+    """
+    Parameters: String with newline breaks
+    Returns: String without newline breaks
+    """
+    if "\n" in text:
+        text = text.split("\n")
+        text_stripped = []
+        for line in text:
+            if line != "":
+                text_stripped.append(line.strip())
+        # Join the list into a single string
+        text_joined = " ".join(text_stripped)
+        text = text_joined
+    return text
+
+
 def normalizeStudentStd(student_data):
     """
     Parameter: Student Data from getStudentDetails()
@@ -835,6 +852,12 @@ def normalizeStudentStd(student_data):
         acc_no = value[3]
         holder = value[4]
         branch = value[5]
+
+        # Cleaning spaces and newline from data
+        name = convertParagraphToLine(name)
+        standard = convertParagraphToLine(standard)
+        holder = convertParagraphToLine(holder)
+        branch = convertParagraphToLine(branch)
 
         # Extracted data
         data[i] = name, convertStdToNum(standard), ifsc, acc_no, holder, branch
