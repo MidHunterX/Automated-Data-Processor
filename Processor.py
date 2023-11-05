@@ -550,7 +550,7 @@ def printStudentDataFrame(student_data):
         student_record,
         columns=['', 'Name', 'Std', 'IFSC', 'Account No', 'Holder', 'Branch']
     )
-    print(df)
+    print(df.to_string(index=False))
 
 
 def preprocessFiles(input_dir):
