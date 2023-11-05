@@ -859,8 +859,11 @@ def normalizeStudentStd(student_data):
         holder = convertParagraphToLine(holder)
         branch = convertParagraphToLine(branch)
 
+        # Normalizing Standard data to Int variant
+        standard = convertStdToNum(standard)
+
         # Extracted data
-        data[i] = name, convertStdToNum(standard), ifsc, acc_no, holder, branch
+        data[i] = name, standard, ifsc, acc_no, holder, branch
         i = i + 1
 
     return data
