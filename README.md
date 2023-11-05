@@ -215,3 +215,22 @@ KNR    KN    Kannur
 KSD    KS    Kasargod
 ```
 
+## Account Number Validation
+RBI dictates certain rules over Indian Bank Account Number structures (9 - 18).
+https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=695#UAN
+
+    - Most of the banks have unique account numbers.
+    - Account number length varies from 9 digits to 18 digits.
+    - Most of the banks (67 out of 78) have included branch code as part of the account number structure. Some banks have product code as part of the account number structure.
+    - 40 out of 78 banks do not have check digit as part of the account number structure.
+    - All banks have purely numeric account numbers, except one or two foreign banks.
+    - Only in the case of 20 banks, account numbers are formed without any pattern with a unique running serial number.
+
+Indian Bank Account Number Validation Regex:
+```
+^\d{9,18}$
+```
+
+A better way to validate would be to select the right bank and then have checks in place as per the bank which have been outlined and analyzed by the RBI here:
+https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=695#A3
+
