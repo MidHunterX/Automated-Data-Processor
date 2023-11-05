@@ -770,13 +770,15 @@ def convertStdToNum(data):
             "11",
             "x1", "xi",
             "11th",
-            "plus one", "plusone" "+1",
+            "plus one", "plusone",
+            "+1", "+1 science", "+1 commerce", "+1 humanities",
         ],
         12: [
             "12",
             "x11", "xii",
             "12th",
-            "plus two", "plustwo" "+2",
+            "plus two", "plustwo",
+            "+2", "+2 science", "+2 commerce", "+2 humanities",
         ],
         13: [
             "1 dc", "1dc",
