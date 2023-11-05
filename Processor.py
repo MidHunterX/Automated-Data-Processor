@@ -109,8 +109,8 @@ def main():
 
 def loadDistrictDataset():
     district_list = [
-        "Thiruvananthapuram", "Trivandrum", "Kollam", "Pathanamthitta",
-        "Alappuzha", "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
+        "Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha",
+        "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
         "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasargod"
     ]
     return district_list
@@ -878,10 +878,8 @@ def writeToDB(conn, district, institution, student_data):
 
     try:
         cursor = conn.cursor()
-        print("connected!")
 
         # Insert Institution
-        print("Executing School SQL")
         inst_name = institution["name"]
         inst_place = institution["place"]
         inst_number = institution["number"]
@@ -904,7 +902,6 @@ def writeToDB(conn, district, institution, student_data):
         school_id = cursor.lastrowid
 
         # Insert Students
-        print("Executing Student SQL")
         for key, value in student_data.items():
             name = value[0]
             standard = value[1]
