@@ -5,6 +5,7 @@ import csv          # CSV file manipulation
 import os           # Directory path support
 import glob         # Finding files with extensions
 import shutil       # Copying and Moving files
+import pandas       # Printing Tables
 from collections import Counter     # Most Common Value
 
 
@@ -68,12 +69,12 @@ def main():
 
             # Printing Final Data
             printInstitution(institution)
-            printStudentData(student_data)
+            print("")
+            printStudentDataFrame(student_data)
 
             # Enter to Confirm only if Student Class Valid
             if valid_std is True:
                 verification = input("\nCorrect? (ret / n): ")
-                print("")
             else:
                 # Moves to investigation_dir for checking
                 verification = "n"
@@ -537,6 +538,19 @@ def printStudentData(student_data):
         branch = value[5]
         print(f"{i}: {name},{standard},{ifsc},{acc_no},{holder},{branch}")
         i += 1
+
+
+def printStudentDataFrame(student_data):
+    student_record = []
+    for key, val in student_data.items():
+        row = [key+1, val[0], val[1], val[2], val[3], val[4], val[5]]
+        student_record.append(row)
+
+    df = pandas.DataFrame(
+        student_record,
+        columns=['', 'Name', 'Std', 'IFSC', 'Account No', 'Holder', 'Branch']
+    )
+    print(df)
 
 
 def preprocessFiles(input_dir):
