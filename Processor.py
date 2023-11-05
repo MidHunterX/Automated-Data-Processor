@@ -60,6 +60,7 @@ def main():
 
             # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
+            student_data = normalizeStudentBranch(student_data, ifsc_dataset)
 
             # Validating Student Data
             if isValidStudentStd(student_data):
@@ -861,6 +862,60 @@ def normalizeStudentStd(student_data):
 
         # Normalizing Standard data to Int variant
         standard = convertStdToNum(standard)
+
+        # Extracted data
+        data[i] = name, standard, ifsc, acc_no, holder, branch
+        i = i + 1
+
+    return data
+
+
+def getBranchFromIfsc(ifsc, ifsc_dataset):
+    """
+    Arguments: (ifsc, ifsc_dataset)
+        - ifsc_list: IFSC Code
+        - ifsc_dataset: IFSC Razorpay Dataset from loadIfscDataset()
+
+    Returns:
+        - "": If there exists no record of IFSC in dataset
+        - branch: If Branch for IFSC is found
+    """
+    branch = ""
+    if type(ifsc) is str:
+        ifsc_details = ifsc_dataset.get(ifsc)
+        if ifsc_details:
+            branch = ifsc_details["Branch"]
+    return branch
+
+
+def normalizeStudentBranch(student_data, ifsc_dataset):
+    """
+    Parameter:
+        - student_data: Student data from getStudentDetails()
+        - ifsc_dataset: Razorpay IFSC Dataset from loadIfscDataset()
+
+    Returns: A dictionary of tuples with corrected Branch
+
+    data = {
+        0: (name, standard, ifsc, acc_no, holder, razorpay_branch),
+        1: (name, standard, ifsc, acc_no, holder, razorpay_branch),
+        2: (name, standard, ifsc, acc_no, holder, razorpay_branch)
+    }
+    """
+    i = 0
+    data = {}
+    for key, value in student_data.items():
+        name = value[0]
+        standard = value[1]
+        ifsc = value[2]
+        acc_no = value[3]
+        holder = value[4]
+        branch = value[5]
+
+        # Normalizing Branch from IFSC using RazorPay Dataset
+        razorpay_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+        if razorpay_branch:
+            branch = razorpay_branch
 
         # Extracted data
         data[i] = name, standard, ifsc, acc_no, holder, branch
