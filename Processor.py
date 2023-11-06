@@ -730,13 +730,13 @@ def convertStdToNum(data):
         2: [
             "2", "two"
             "2a", "2b", "2c", "2d", "2e",
-            "11", "ii",
+            "ii",
             "2nd", "second"
         ],
         3: [
             "3", "three",
             "3a", "3b", "3c", "3d", "3e",
-            "111", "iii",
+            "iii",
             "3rd", "third"
         ],
         4: [
