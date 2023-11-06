@@ -72,14 +72,17 @@ The RazorPay IFSC Dataset is a comprehensive and up-to-date collection of Indian
 BANK,IFSC,BRANCH,CENTRE,DISTRICT,STATE,ADDRESS,CONTACT,IMPS,RTGS,CITY,ISO3166,NEFT,MICR,UPI,SWIFT
 Bank,IOBA0001851,THANKASERY,KOLLAM,KOLLAM,KERALA,THIRUVANANTHAPURAM,2464429,true,true,KOLLAM,IN-KL
 ```
+- Data String Case Validation: Name (Title Case), IFSC (Upper), Holder (Title), Branch (Upper)
+- Multiple word branches like: [Town, District]
 
 # Further Requirements
-- [ ] Overhaul District recognition algorithm
-    - [ ] Get record from RBI Dataset
-    - [ ] Convert CSV record to List
-    - [ ] Get most frequently used (mfu) data
-    - [ ] Do comparison searching to mfu data with District Dataset
-    - [ ] Return First match
+- [ ] Name (Title Case), IFSC (Upper), Holder (Title), Branch (Upper)
+- [x] Overhaul District recognition algorithm
+    - [x] Get record from RBI Dataset
+    - [x] Convert CSV record to List
+    - [x] Get most frequently used (mfu) data
+    - [x] Do comparison searching to mfu data with District Dataset
+    - [x] Return First match
 - [x] Abstract correctDocxFormat(docx_file) and correctPdfFormat(pdf_file)
 - [x] Step by step processing
 - [x] Step 1: Filename Renaming
@@ -91,7 +94,7 @@ Bank,IOBA0001851,THANKASERY,KOLLAM,KOLLAM,KERALA,THIRUVANANTHAPURAM,2464429,true
     - [x] Step 2.3: For each file, Check the file structure
     - [x] Step 2.4: Separate out each well structured file
     - [x] Step 2.5: Separate out suspicious files for investigation
-- [ ] Step 3: Form to database writing
+- [x] Step 3: Form to database writing
 
 # Data Analysis
 
