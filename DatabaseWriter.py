@@ -60,17 +60,21 @@ for file in file_list:
 
         # Normalizing Student Data
         student_data = pr.normalizeStudentStd(student_data)
+        student_data = pr.normalizeStudentBranch(student_data, ifsc_dataset)
+
         if pr.isValidStudentStd(student_data):
             valid_std = True
+
+        # Printing Final Data
+        pr.printInstitution(institution)
+        print("")
+        pr.printStudentDataFrame(student_data)
+
         if valid_std is True:
             verification = input("\nCorrect? (ret / n): ")
             print("")
         else:
             verification = "n"
-
-        # Printing Final Data
-        pr.printInstitution(institution)
-        pr.printStudentData(student_data)
 
         # Write to database
         if verification == "":
