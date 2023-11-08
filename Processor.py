@@ -44,6 +44,8 @@ def main():
             proceed = True
             institution = getInstitutionDetails(file)
             student_data = getStudentDetails(file)
+        else:
+            print("Formatting error detected!")
 
         # If Correct format, proceed
         if proceed is True:
@@ -59,13 +61,15 @@ def main():
                 district = district_guess
             print(f"Selected District: {district}\n")
 
+            # Validating Student Data for conversion to int equivalent
+            if isValidStudentStd(student_data):
+                valid_std = True
+            else:
+                print("Cannot convert all standards to num equivalents :(")
+
             # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
             student_data = normalizeStudentBranch(student_data, ifsc_dataset)
-
-            # Validating Student Data
-            if isValidStudentStd(student_data):
-                valid_std = True
 
             # Printing Final Data
             printInstitution(institution)
@@ -873,6 +877,10 @@ def normalizeStudentStd(student_data):
         standard = convertParagraphToLine(standard)
         holder = convertParagraphToLine(holder)
         branch = convertParagraphToLine(branch)
+
+        # Cleaning up important data
+        acc_no = str(acc_no).strip()
+        ifsc = str(ifsc).strip()
 
         # Normalizing Standard data to Int variant
         standard = convertStdToNum(standard)
