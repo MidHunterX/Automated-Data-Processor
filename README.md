@@ -237,3 +237,6 @@ Indian Bank Account Number Validation Regex:
 A better way to validate would be to select the right bank and then have checks in place as per the bank which have been outlined and analyzed by the RBI here:
 https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=695#A3
 
+# Findings
+- Many Schools uses open document formats (FOSS FTW)
+- Formatting Issues might most likely be Colleges (due to class validation). Remember, no. of colleges are sparse unlike schools.
