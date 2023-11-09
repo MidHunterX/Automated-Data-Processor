@@ -710,6 +710,15 @@ def guessDistrictFromIfscList(ifsc_list, ifsc_dataset):
         print("Couldn't decide District :(")
         print(f"Guess Data: {district_list}\n")
 
+    # If District is unrecognized district, select from most common 3 values
+    district_dataset = loadDistrictDataset()
+    if district not in district_dataset:
+        count = Counter(district_list)
+        mostCommon_list = count.most_common(3)
+        for i in mostCommon_list:
+            if i[0] in district_dataset:
+                district = i[0]
+
     return district
 
 
