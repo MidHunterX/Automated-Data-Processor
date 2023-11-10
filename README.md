@@ -74,8 +74,10 @@ Bank,IOBA0001851,THANKASERY,KOLLAM,KOLLAM,KERALA,THIRUVANANTHAPURAM,2464429,true
 ```
 - Data String Case Validation: Name (Title Case), IFSC (Upper), Holder (Title), Branch (Upper)
 - Multiple word branches like: [Town, District]
+- In case of any error, close Database. (Prevents DB Lockout)
 
 # Further Requirements
+- [ ] Close DB if any error happens
 - [ ] Name (Title Case), IFSC (Upper), Holder (Title), Branch (Upper)
 - [x] Overhaul District recognition algorithm
     - [x] Get record from RBI Dataset
@@ -240,3 +242,12 @@ https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=695#A3
 # Findings
 - Many Schools uses open document formats (FOSS FTW)
 - Formatting Issues might most likely be Colleges (due to class validation). Remember, no. of colleges are sparse unlike schools.
+
+# Future Scope
+## Cycling Automation Criteria
+- Institutuions initialises student list
+- Delete class 10 students
+- Student class increment by 1
+- Institutions updates empty record for class 1
+
+Advantage: Increased donation amount
