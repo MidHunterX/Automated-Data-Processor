@@ -1,12 +1,13 @@
-from sqlite3 import IntegrityError
 import pdfplumber   # PDF parsing
 import docx         # Docx parsing
 import csv          # CSV file manipulation
 import os           # Directory path support
+import sys          # Command line arguments and exit
 import glob         # Finding files with extensions
 import shutil       # Copying and Moving files
-import pandas       # Printing Tables
+from pandas import DataFrame        # Printing Tables
 from collections import Counter     # Most Common Value
+from sqlite3 import IntegrityError  # SQLite AccNo error
 
 
 def main():
@@ -127,6 +128,21 @@ def initNestedDir(input_dir, nest_name):
     if not os.path.exists(directory_path):
         os.mkdir(directory_path)
     return directory_path
+
+
+def getArgument():
+    """
+    Returns: A single argument from commandline
+    """
+    max_args = 1
+    arg = sys.argv[1:]  # 0th arg is filename.py
+    if len(arg) == max_args:
+        command = str(sys.argv[1])
+    elif len(arg) > max_args:
+        sys.exit("Error: Too much arguments")
+    elif len(arg) < 1:
+        sys.exit("Error: No argument")
+    return command
 
 
 def correctPdfFormat(pdf_file):
@@ -550,7 +566,7 @@ def printStudentDataFrame(student_data):
         row = [key+1, val[0], val[1], val[2], val[3], val[4], val[5]]
         student_record.append(row)
 
-    df = pandas.DataFrame(
+    df = DataFrame(
         student_record,
         columns=['', 'Name', 'Std', 'IFSC', 'Account No', 'Holder', 'Branch']
     )
