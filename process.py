@@ -1,15 +1,16 @@
 import pdfplumber   # PDF parsing
+import datetime     # ISO Date format
+import shutil       # Copying and Moving files
 import docx         # Docx parsing
 import csv          # CSV file manipulation
 import os           # Directory path support
 import sys          # Command line arguments and exit
 import glob         # Finding files with extensions
-import shutil       # Copying and Moving files
-import sqlite3      # SQLite DB
-import datetime     # ISO Date
-from pandas import DataFrame        # Printing Tables
-from collections import Counter     # Most Common Value
+import sqlite3      # SQLite DB operations
+import pyperclip    # Clipboard handling
 from sqlite3 import IntegrityError  # SQLite AccNo error
+from collections import Counter     # Most Common Value
+from pandas import DataFrame        # Printing Tables
 
 
 def main():
@@ -18,12 +19,22 @@ def main():
 
     input_dir = "input"
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
+
+    # ------------------------------------------------------------ [ COMMANDS ]
+
     command = getArgument()
-    district_user = getDistrictFromUser()
 
     # Command List
     cmd_db = "database"
     cmd_form = "forms"
+    cmd_branch = "branch"
+
+    # PROCESS BRANCH
+    if command == cmd_branch:
+        getBranchFromPastedIfsc(ifsc_dataset)
+        sys.exit(0)
+
+    district_user = getDistrictFromUser()
 
     # Form Processing Variables
     if command == cmd_form:
@@ -1032,6 +1043,54 @@ def getBranchFromIfsc(ifsc, ifsc_dataset):
         if ifsc_details:
             branch = ifsc_details["Branch"]
     return branch
+
+
+def getBranchFromIfscList(ifsc_list, ifsc_dataset):
+    """
+    Arguments:
+        - ifsc_list: List containing IFSC Codes
+        - ifsc_dataset: IFSC Razorpay Dataset from loadIfscDataset()
+
+    Returns:
+        - branch_list: List of Branch for each IFSC Code
+    """
+    branch_list = []
+    for ifsc in ifsc_list:
+        branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+        branch_list.append(branch)
+    return branch_list
+
+
+def read_pasted_text():
+    lines = []
+    for line in sys.stdin:
+        lines.append(line.rstrip('\n'))
+    # Join the lines into a single string
+    # pasted_text = '\n'.join(lines)
+    return lines
+
+
+def getBranchFromPastedIfsc(ifsc_dataset):
+
+    print("")
+    print("📝 Paste IFSC and press Ctrl+Z")
+    print("-------------------------------")
+    text = read_pasted_text()
+    branch_list = []
+    for ifsc in text:
+        ifsc = ifsc.strip()
+        branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+        branch_list.append(branch)
+
+    # Join the list into a single string
+    text = '\n'.join(branch_list)
+
+    # Copy to Clipboard
+    print("")
+    print("✅ Copied to Clipboard")
+    print("-----------------------")
+    print(text)
+    pyperclip.copy(text)
 
 
 def normalizeStudentBranch(student_data, ifsc_dataset):
