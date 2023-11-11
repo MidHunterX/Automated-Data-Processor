@@ -5,6 +5,8 @@ import os           # Directory path support
 import sys          # Command line arguments and exit
 import glob         # Finding files with extensions
 import shutil       # Copying and Moving files
+import sqlite3      # SQLite DB
+import datetime     # ISO Date
 from pandas import DataFrame        # Printing Tables
 from collections import Counter     # Most Common Value
 from sqlite3 import IntegrityError  # SQLite AccNo error
@@ -15,31 +17,58 @@ def main():
     # ------------------------------------------------- [ INIT FILES AND DIRS ]
 
     input_dir = "input"
-    investigation_dir = initNestedDir(input_dir, "for checking")
-    formatting_dir = initNestedDir(input_dir, "formatting issues")
-
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
+    command = getArgument()
     district_user = getDistrictFromUser()
+
+    # Command List
+    cmd_db = "database"
+    cmd_form = "forms"
+
+    # Form Processing Variables
+    if command == cmd_form:
+        investigation_dir = initNestedDir(input_dir, "for checking")
+        formatting_dir = initNestedDir(input_dir, "formatting issues")
+
+    # Database Processing Variables
+    elif command == cmd_db:
+        db_file = "data\\database.db"
+        iso_date = datetime.date.today().isoformat()
+        input_dir = initNestedDir(input_dir, district_user)
+        output_dir = initNestedDir(input_dir, iso_date)
+        investigation_dir = initNestedDir(input_dir, "for checking")
+        formatting_dir = initNestedDir(input_dir, "formatting issues")
+        rejected_dir = initNestedDir(input_dir, "rejected")
+
+    else:
+        print("Unrecognized Command 😕")
+        print(f"Try using: process {cmd_form} or process {cmd_db}")
 
     # ----------------------------------------------------- [ VARS FOR REPORT ]
 
     files_written = 0
     for_checking_count = 0
     incorrect_format_count = 0
+    if command == cmd_db:
+        rejected_count = 0
 
     # ----------------------------------------------------- [ FILE PROCESSING ]
 
-    file_list = getFileList(input_dir, [".docx", ".pdf"])
+    if command == "database":
+        # Open connection to Database
+        print("Connecting to Database")
+        conn = sqlite3.connect(db_file)
 
+    file_list = getFileList(input_dir, [".docx", ".pdf"])
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
+        print(f"\n==== {file_name}.{file_extension} ====")
 
         # Flags
         proceed = False
         valid_std = False
 
-        # Check for Formatting issues
-        print(f"\n==== {file_name}.{file_extension} ====")
+        # ---------------------------------------------------- [ FORM PARSING ]
 
         if correctFormat(file):
             proceed = True
@@ -48,8 +77,12 @@ def main():
         else:
             print("Formatting error detected!")
 
-        # If Correct format, proceed
+        # ------------------------------------------------- [ DATA PROCESSING ]
+
         if proceed is True:
+
+            # Cleaning up Student Data for processing
+            student_data = cleanStudentData(student_data)
 
             # Guessing District
             ifsc_list = getStudentIfscList(student_data)
@@ -77,19 +110,48 @@ def main():
             print("")
             printStudentDataFrame(student_data)
 
-            # Enter to Confirm only if Student Class Valid
-            if valid_std is True:
-                verification = input("\nCorrect? (ret / n): ")
-            else:
-                # Moves to investigation_dir for checking
-                verification = "n"
+            # ------------------------------------------------ [ VERIFICATION ]
+
+            # [ INFO: SAFE SPACE FOR KEYBOARDINTERRUPT ] #
+            try:
+                # Enter to Confirm only if Student Class Valid
+                if valid_std is True:
+                    verification = input("\nCorrect? (ret / n): ")
+                else:
+                    # Moves to investigation_dir for checking
+                    verification = "n"
+
+            # Abrupt ending for tactical retreat purposes (ctrl+c)
+            except KeyboardInterrupt:
+                print("Caught the Keyboard Interrupt ;D")
+                if command == cmd_db:
+                    # Close Connection to Database
+                    print("Closing DB")
+                    conn.close()
+                sys.exit("Sayonara 👋")
+
+            # ------------------------------------------- [ POST VERIFICATION ]
 
             if verification == "":
                 print("Marking as Correct.")
-                # Creating district directory
-                output_dir = initNestedDir(input_dir, district)
-                shutil.move(file, output_dir)
-                files_written += 1
+
+                # SORTING VERIFIED FORM
+                if command == cmd_form:
+                    # Creating district directory
+                    output_dir = initNestedDir(input_dir, district)
+                    shutil.move(file, output_dir)
+                    files_written += 1
+
+                # WRITING VERIFIED DATA INTO DATABASE
+                if command == cmd_db:
+                    if writeToDB(conn, district, institution, student_data):
+                        print("Data Written Successfully!")
+                        shutil.move(file, output_dir)
+                        files_written += 1
+                    else:
+                        print("Rejected by Database")
+                        shutil.move(file, rejected_dir)
+                        rejected_count += 1
             else:
                 print("Moving for further Investigation.")
                 shutil.move(file, investigation_dir)
@@ -101,14 +163,21 @@ def main():
                 shutil.move(file, formatting_dir)
             incorrect_format_count += 1
 
+    if command == cmd_db:
+        # Close Connection to Database
+        print("Closing DB")
+        conn.close()
+
     # -------------------------------------------------------------- [ REPORT ]
 
     print("")
     print("Final Report")
-    print("------------")
+    print("------------------------------")
     print(f"Files Accepted \t\t : {files_written}")
     print(f"For Checking \t\t : {for_checking_count}")
     print(f"Formatting Issues \t : {incorrect_format_count}")
+    if command == cmd_db:
+        print(f"Rejected by Database\t : {rejected_count}")
 
 
 # ================================ FUNCTIONS ================================ #
@@ -876,15 +945,15 @@ def convertParagraphToLine(text):
     return text
 
 
-def normalizeStudentStd(student_data):
+def cleanStudentData(student_data):
     """
     Parameter: Student Data from getStudentDetails()
-    Returns: A dictionary of tuples with corrected Student standard
+    Returns: A dictionary of tuples with cleaned up values for processing
 
     data = {
-        0: (name, numeric_standard, ifsc, acc_no, holder, branch),
-        1: (name, numeric_standard, ifsc, acc_no, holder, branch),
-        2: (name, numeric_standard, ifsc, acc_no, holder, branch)
+        0: (name, standard, ifsc, acc_no, holder, branch),
+        1: (name, standard, ifsc, acc_no, holder, branch),
+        2: (name, standard, ifsc, acc_no, holder, branch)
     }
     """
     i = 0
@@ -906,6 +975,36 @@ def normalizeStudentStd(student_data):
         # Cleaning up important data
         acc_no = str(acc_no).strip()
         ifsc = str(ifsc).strip()
+        name = name.strip()
+        holder = holder.strip()
+
+        # Extracted data
+        data[i] = name, standard, ifsc, acc_no, holder, branch
+        i = i + 1
+
+    return data
+
+
+def normalizeStudentStd(student_data):
+    """
+    Parameter: Student Data from getStudentDetails()
+    Returns: A dictionary of tuples with corrected Student standard
+
+    data = {
+        0: (name, numeric_standard, ifsc, acc_no, holder, branch),
+        1: (name, numeric_standard, ifsc, acc_no, holder, branch),
+        2: (name, numeric_standard, ifsc, acc_no, holder, branch)
+    }
+    """
+    i = 0
+    data = {}
+    for key, value in student_data.items():
+        name = value[0]
+        standard = value[1]
+        ifsc = value[2]
+        acc_no = value[3]
+        holder = value[4]
+        branch = value[5]
 
         # Normalizing Standard data to Int variant
         standard = convertStdToNum(standard)
@@ -1004,10 +1103,10 @@ def writeToDB(conn, district, institution, student_data):
         True: if inserted into DB successfully
         False: if any errors are encountered
     """
-    proceed = True
 
     try:
         cursor = conn.cursor()
+        conn.execute("BEGIN TRANSACTION")
 
         # Insert Institution
         inst_name = institution["name"]
@@ -1032,6 +1131,19 @@ def writeToDB(conn, district, institution, student_data):
         school_id = cursor.lastrowid
 
         # Insert Students
+        studentSQL = """
+        INSERT INTO Students (
+            SchoolID,
+            StudentName,
+            Class,
+            IFSC,
+            AccNo,
+            AccHolder,
+            Branch
+        )
+        VALUES ( ?, ?, ?, ?, ?, ?, ?)
+        """
+
         for key, value in student_data.items():
             name = value[0]
             standard = value[1]
@@ -1039,33 +1151,22 @@ def writeToDB(conn, district, institution, student_data):
             acc_no = value[3]
             holder = value[4]
             branch = value[5]
-
-            studentSQL = """
-            INSERT INTO Students (
-                SchoolID,
-                StudentName,
-                Class,
-                IFSC,
-                AccNo,
-                AccHolder,
-                Branch
-            )
-            VALUES ( ?, ?, ?, ?, ?, ?, ?)
-            """
             variables = school_id, name, standard, ifsc, acc_no, holder, branch
             cursor.execute(studentSQL, variables)
 
         print("Commiting Changes")
         conn.commit()
+        return True
 
     except IntegrityError as e:
         print(f"IntegrityError: {e}")
-        proceed = False
+        conn.rollback()
+        return False
+
     except Exception as e:
         print(f"Error: {e}")
-        proceed = False
-
-    return proceed
+        conn.rollback()
+        return False
 
 
 # ============================= MAIN FUNCTION ============================== #
