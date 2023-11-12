@@ -169,10 +169,15 @@ def main():
                 for_checking_count += 1
         else:
             # Enter to Confirm
-            verification = input("Proceed? (ret)")
-            if verification == "":
-                shutil.move(file, formatting_dir)
-            incorrect_format_count += 1
+            try:
+                verification = input("Proceed? (ret) ")
+                if verification == "":
+                    shutil.move(file, formatting_dir)
+                incorrect_format_count += 1
+            # Abrupt ending for tactical retreat purposes (ctrl+c)
+            except KeyboardInterrupt:
+                print("Caught the Keyboard Interrupt ;D")
+                sys.exit("Sayonara 👋")
 
     if command == cmd_db:
         # Close Connection to Database
@@ -265,6 +270,16 @@ def correctPdfFormat(pdf_file):
                     flags["Student Table"] = True
     except ValueError:
         pass
+
+    # Logs
+    if flags["Institution Heading"] is False:
+        print("Heading not found: Name of the Institution")
+    if flags["Institution Lines"] is False:
+        print("Problem with Institution details")
+    if flags["Student Heading"] is False:
+        print("Heading not found: Student Details")
+    if flags["Student Table"] is False:
+        print("Object not found: Student Table")
 
     status = all(flags.values())
     return status
