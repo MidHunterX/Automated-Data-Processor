@@ -74,7 +74,12 @@ def main():
 
     file_list = getFileList(input_dir, [".docx", ".pdf"])
     for file in file_list:
-        file_name, file_extension = os.path.basename(file).split(".")
+
+        try:
+            file_name, file_extension = os.path.basename(file).split(".")
+        except ValueError:
+            print(f"{file} Caused Value Error: Unpacking FileName, Extension")
+            break
         print("")
         printTextBox_Centered(f"📄 {file_name}.{file_extension}")
 
@@ -910,103 +915,198 @@ def convertStdToNum(data):
 
     std_dataset = {
         1: [
-            "1", "one",
-            "1a", "1b", "1c", "1d", "1e",
+            "1",
+            "1a",
+            "1b",
+            "1c",
+            "1d",
+            "1e",
             "i",
-            "1st", "first"
+            "1st",
+            "one",
+            "first"
         ],
         2: [
-            "2", "two",
-            "2a", "2b", "2c", "2d", "2e",
+            "2",
+            "2a",
+            "2b",
+            "2c",
+            "2d",
+            "2e",
             "ii",
-            "2nd", "second"
+            "2nd",
+            "two",
+            "second"
         ],
         3: [
-            "3", "three",
-            "3a", "3b", "3c", "3d", "3e",
+            "3",
+            "3a",
+            "3b",
+            "3c",
+            "3d",
+            "3e",
             "iii",
-            "3rd", "third"
+            "3rd",
+            "three",
+            "third"
         ],
         4: [
-            "4", "four",
-            "4a", "4b", "4c", "4d", "4e",
-            "1v", "iv",
-            "4th", "fourth"
+            "4",
+            "4a",
+            "4b",
+            "4c",
+            "4d",
+            "4e",
+            "iv",
+            "1v",
+            "4th",
+            "four",
+            "fourth"
         ],
         5: [
-            "5", "five",
-            "5a", "5b", "5c", "5d", "5e",
+            "5",
+            "5a",
+            "5b",
+            "5c",
+            "5d",
+            "5e",
             "v",
-            "5th", "fifth",
+            "5th",
+            "five",
+            "fifth",
         ],
         6: [
-            "6", "six",
-            "6a", "6b", "6c", "6d", "6e",
-            "v1", "vi",
-            "6th", "sixth",
+            "6",
+            "6a",
+            "6b",
+            "6c",
+            "6d",
+            "6e",
+            "vi",
+            "v1",
+            "six",
+            "6th",
+            "sixth",
         ],
         7: [
-            "7", "seven",
-            "7a", "7b", "7c", "7d", "7e",
-            "v11", "vii",
-            "7th", "seventh",
+            "7",
+            "7a",
+            "7b",
+            "7c",
+            "7d",
+            "7e",
+            "vii",
+            "v11",
+            "7th",
+            "seven",
+            "seventh",
         ],
         8: [
-            "8", "eight",
-            "8a", "8b", "8c", "8d", "8e",
-            "v111", "viii",
-            "8th", "eighth",
+            "8",
+            "8a",
+            "8b",
+            "8c",
+            "8d",
+            "8e",
+            "v111",
+            "viii",
+            "8th",
+            "eight",
+            "eighth",
         ],
         9: [
-            "9", "nine",
-            "9a", "9b", "9c", "9d", "9e",
-            "1x", "ix",
-            "9th", "nineth",
+            "9",
+            "9a",
+            "9b",
+            "9c",
+            "9d",
+            "9e",
+            "1x",
+            "ix",
+            "9th",
+            "nine",
+            "nineth",
         ],
         10: [
-            "10", "ten",
-            "10a", "10b", "10c", "10d", "10e",
+            "10",
+            "10a",
+            "10b",
+            "10c",
+            "10d",
+            "10e",
             "x",
-            "10th", "tenth",
+            "10th",
+            "ten",
+            "tenth",
         ],
         11: [
             "11",
-            "x1", "xi",
+            "x1",
+            "xi",
             "11th",
-            "plus one", "plusone",
-            "+1", "+1 science", "+1 commerce", "+1 humanities",
+            "plus one",
+            "plusone",
+            "+1",
+            "+1 science",
+            "+1 commerce",
+            "+1 humanities",
         ],
         12: [
             "12",
-            "x11", "xii",
+            "x11",
+            "xii",
             "12th",
-            "plus two", "plustwo",
-            "+2", "+2 science", "+2 commerce", "+2 humanities",
+            "plus two",
+            "plustwo",
+            "+2",
+            "+2 science",
+            "+2 commerce",
+            "+2 humanities",
         ],
         13: [
-            "1 dc", "1dc",
-            "i dc", "idc",
-            "ist dc", "1stdc", "1st dc"
+            "1 dc",
+            "1dc",
+            "i dc",
+            "idc",
+            "ist dc",
+            "1stdc",
+            "1st dc"
         ],
         14: [
-            "2 dc", "2dc",
-            "ii dc", "iidc",
-            "iind dc", "2nddc", "2nd dc"
+            "2 dc",
+            "2dc",
+            "ii dc",
+            "iidc",
+            "iind dc",
+            "2nddc",
+            "2nd dc"
         ],
         15: [
-            "3 dc", "3dc",
-            "iii dc", "iiidc",
-            "iiird dc", "3rddc", "3rd dc"
+            "3 dc",
+            "3dc",
+            "iii dc",
+            "iiidc",
+            "iiird dc",
+            "3rddc",
+            "3rd dc"
         ],
         16: [
-            "1 pg", "1pg",
-            "i pg", "ipg",
-            "ist pg", "1st pg", "1stpg"
+            "1 pg",
+            "1pg",
+            "i pg",
+            "ipg",
+            "ist pg",
+            "1st pg",
+            "1stpg"
         ],
         17: [
-            "2 pg", "2pg",
-            "ii pg", "iipg",
-            "iind pg", "2ndpg", "2nd pg"
+            "2 pg",
+            "2pg",
+            "ii pg",
+            "iipg",
+            "iind pg",
+            "2ndpg",
+            "2nd pg"
         ],
     }
     if isinstance(data, str):
