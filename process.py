@@ -193,13 +193,16 @@ def main():
     # -------------------------------------------------------------- [ REPORT ]
 
     print("")
-    print("Final Report")
-    print("------------------------------")
-    print(f"Files Accepted \t\t : {files_written}")
-    print(f"For Checking \t\t : {for_checking_count}")
-    print(f"Formatting Issues \t : {incorrect_format_count}")
+    horizontal_line = "-"*80
+    print(horizontal_line)
+    print("FINAL REPORT".center(80))
+    print(horizontal_line)
+    print(f"Files Accepted    : {files_written}".center(80))
+    print(f"For Checking      : {for_checking_count}".center(80))
+    print(f"Formatting Issues : {incorrect_format_count}".center(80))
     if command == cmd_db:
-        print(f"Rejected by Database\t : {rejected_count}")
+        print(f"Rejected by DB    : {rejected_count}".center(80))
+    print(horizontal_line)
 
 
 # ================================ FUNCTIONS ================================ #
@@ -913,7 +916,7 @@ def convertStdToNum(data):
             "1st", "first"
         ],
         2: [
-            "2", "two"
+            "2", "two",
             "2a", "2b", "2c", "2d", "2e",
             "ii",
             "2nd", "second"
