@@ -8,9 +8,11 @@ import sys          # Command line arguments and exit
 import glob         # Finding files with extensions
 import sqlite3      # SQLite DB operations
 import pyperclip    # Clipboard handling
-from sqlite3 import IntegrityError  # SQLite AccNo error
-from collections import Counter     # Most Common Value
 from pandas import DataFrame        # Printing Tables
+from collections import Counter     # Most Common Value
+from prompt_toolkit import prompt   # Prompt for Autocompletion
+from sqlite3 import IntegrityError  # SQLite AccNo error
+from prompt_toolkit.completion import WordCompleter  # Autocompletion Engine
 
 
 def main():
@@ -103,7 +105,10 @@ def main():
             # Deciding User District vs Guessed District
             district = district_user
             if district == "Unknown":
-                district = district_guess
+                if command == cmd_form:
+                    district = district_guess
+                if command == cmd_db:
+                    district = getIndianState()
             print(f"Selected District: {district}\n")
 
             # Validating Student Data for conversion to int equivalent
@@ -593,6 +598,44 @@ def correctFormat(file):
         data = correctPdfFormat(pdf_file)
 
     return data
+
+
+def getIndianState():
+    indian_states = [
+        "Andhra Pradesh",
+        "Arunachal Pradesh",
+        "Assam",
+        "Bihar",
+        "Chhattisgarh",
+        "Goa",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jharkhand",
+        "Karnataka",
+        "Kerala",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Manipur",
+        "Meghalaya",
+        "Mizoram",
+        "Nagaland",
+        "Odisha",
+        "Punjab",
+        "Rajasthan",
+        "Sikkim",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "Uttarakhand",
+        "West Bengal"
+    ]
+
+    state_completer = WordCompleter(indian_states)
+    # Prompt for state selection
+    selected_state = prompt('Enter a state: ', completer=state_completer)
+    return selected_state
 
 
 # =============================== PROCEDURES ================================ #
