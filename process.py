@@ -75,7 +75,8 @@ def main():
     file_list = getFileList(input_dir, [".docx", ".pdf"])
     for file in file_list:
         file_name, file_extension = os.path.basename(file).split(".")
-        print(f"\n==== {file_name}.{file_extension} ====")
+        print("")
+        printTextBox_Centered(f"📄 {file_name}.{file_extension}")
 
         # Flags
         proceed = False
@@ -88,7 +89,7 @@ def main():
             institution = getInstitutionDetails(file)
             student_data = getStudentDetails(file)
         else:
-            print("Formatting error detected!")
+            print("⚠️ Formatting error detected!")
 
         # ------------------------------------------------- [ DATA PROCESSING ]
 
@@ -100,7 +101,7 @@ def main():
             # Guessing District
             ifsc_list = getStudentIfscList(student_data)
             district_guess = guessDistrictFromIfscList(ifsc_list, ifsc_dataset)
-            print(f"Possible District: {district_guess}")
+            print(f"💡 Possible District: {district_guess}")
 
             # Deciding User District vs Guessed District
             district = district_user
@@ -109,13 +110,13 @@ def main():
                     district = district_guess
                 if command == cmd_db:
                     district = getIndianState()
-            print(f"Selected District: {district}\n")
+            print(f"✍️ Selected District: {district}\n")
 
             # Validating Student Data for conversion to int equivalent
             if isValidStudentStd(student_data):
                 valid_std = True
             else:
-                print("Cannot convert all standards to num equivalents :(")
+                print("⚠️ Cannot convert all standards to num equivalents :(")
 
             # Normalizing Student Data
             student_data = normalizeStudentStd(student_data)
@@ -149,7 +150,7 @@ def main():
             # ------------------------------------------- [ POST VERIFICATION ]
 
             if verification == "":
-                print("Marking as Correct.")
+                print("✅ Marking as Correct.")
 
                 # SORTING VERIFIED FORM
                 if command == cmd_form:
@@ -161,15 +162,15 @@ def main():
                 # WRITING VERIFIED DATA INTO DATABASE
                 if command == cmd_db:
                     if writeToDB(conn, district, institution, student_data):
-                        print("Data Written Successfully!")
+                        print("✅ Data Written Successfully!")
                         shutil.move(file, output_dir)
                         files_written += 1
                     else:
-                        print("Rejected by Database")
+                        print("❌ Rejected by Database")
                         shutil.move(file, rejected_dir)
                         rejected_count += 1
             else:
-                print("Moving for further Investigation.")
+                print("❌ Moving for further Investigation.")
                 shutil.move(file, investigation_dir)
                 for_checking_count += 1
         else:
@@ -278,9 +279,9 @@ def correctPdfFormat(pdf_file):
 
     # Logs
     if flags["Institution Heading"] is False:
-        print("Heading not found: Name of the Institution")
+        print("Heading not found: Institution Details")
     if flags["Institution Lines"] is False:
-        print("Problem with Institution details")
+        print("Data Incomplete: Institution Details")
     if flags["Student Heading"] is False:
         print("Heading not found: Student Details")
     if flags["Student Table"] is False:
@@ -638,9 +639,6 @@ def getIndianState():
     return selected_state
 
 
-# =============================== PROCEDURES ================================ #
-
-
 def getDistrictFromUser():
     try:
         print("""
@@ -660,6 +658,26 @@ def getDistrictFromUser():
 
     except ValueError:
         return district
+
+
+# =============================== PROCEDURES ================================ #
+
+
+def printTextBox_Centered(text):
+    box_width = 80
+
+    if len(text) > box_width - 4:
+        text = text[:box_width - 7] + '...'
+
+    freespace = box_width - len(text) - 4
+    space = ' ' * (freespace // 2)
+
+    horizontal_line = '+' + '-' * (box_width - 2) + '+'
+
+    print(horizontal_line)
+    print(f"|{space} {text}{space + ' ' if freespace % 2 != 0 else space}|")
+    # print(f"|{' ' * (box_width - 2)}|")
+    print(horizontal_line)
 
 
 def writeToCSV(csv_file, institution, student_data):
