@@ -1298,7 +1298,9 @@ def normalizeStudentBranch(student_data, ifsc_dataset):
 
         # Normalizing Branch from IFSC using RazorPay Dataset
         razorpay_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
-        if razorpay_branch:
+
+        # Only allow if "IMPS" is not a part of branchname
+        if razorpay_branch and "IMPS" not in razorpay_branch:
             branch = razorpay_branch
 
         # Extracted data
