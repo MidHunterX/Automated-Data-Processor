@@ -29,10 +29,10 @@ def main():
     # Command List
     cmd_db = "database"
     cmd_form = "forms"
-    cmd_branch = "branch"
+    cmd_ifsc = "ifsc"
 
     # PROCESS BRANCH
-    if command == cmd_branch:
+    if command == cmd_ifsc:
         getBranchFromPastedIfsc(ifsc_dataset)
         sys.exit(0)
 
