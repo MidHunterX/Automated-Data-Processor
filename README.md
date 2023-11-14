@@ -1,3 +1,56 @@
+## Usage
+
+Command | Description
+-- | --
+process forms | parses, cleans and processes forms in input directory
+process database | commits processed forms into a database
+
+## How it works
+
+### Process Forms
+Processes student forms by parsing, segregating student and institution details, cleaning the imported data, inferring the institution's district, checking and standardizing student class information, displaying the data for user validation, and then sorting validated forms into a designated directory, while directing unvalidated forms for further scrutiny or manual inspection.
+
+Command:
+```
+process forms
+```
+
+Algorithm:
+1. Initialize Input Directory
+2. Get file list of supported extensions
+3. If Form is of correct format, parse data
+4. Separate out Student Details and Institution Details
+5. Clean up imported data
+6. Guess District of the Institution
+7. Check if Student class are identifiable
+8. If Student class are identifiable, normalize to Integer equivalents
+9. Print data and check for user validation
+10. If validated, sort form into [district] directory after validation
+11. else, sort form into directory for checking
+
+### Process Database
+This algorithm begins by obtaining the district information from the user and initializing the directory corresponding to that district. It then retrieves a list of verified forms within the district's directory. For each form, it extracts both institution and student data, presenting this data for user validation. The algorithm subsequently adds the validated data into a database and commits the changes. If the data is successfully committed, the form is moved into a directory named after the current date in ISO format ([ISO_Date]); otherwise, the form is relocated to a separate directory named [rejected].
+
+Command:
+```
+process database
+```
+
+Algorithm:
+1. Get district from user and initialize [district] directory
+2. Get list of verified forms inside [district] directory
+3. For each form, load Institution data and Student data
+4. Print data and ask for re-validation
+5. Add both data into database and commit
+6. If data is committed, move form into [ISO_Date] directory
+7. Else move into [rejected] directory
+
+### Process IFSC
+Command:
+```
+process ifsc
+```
+
 # Libraries Used
 Instead of Re-Inventing the wheel, let's use a premade module for simplicity.
 Let's follow the path of the people who went before.
