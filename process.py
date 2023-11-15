@@ -727,7 +727,15 @@ def printStudentData(student_data):
 def printStudentDataFrame(student_data):
     student_record = []
     for key, val in student_data.items():
-        row = [key+1, val[0], val[1], val[2], val[3], val[4], val[5]]
+
+        # Check IFSC Validity
+        ifsc = val[2]
+        if isValidIfsc(ifsc):
+            ifsc = f"{ifsc}✅"
+        else:
+            ifsc = f"{ifsc}❌"
+
+        row = [key+1, val[0], val[1], ifsc, val[3], val[4], val[5]]
         student_record.append(row)
 
     df = DataFrame(
@@ -1331,6 +1339,24 @@ def isValidStudentStd(student_data):
 
     return all(data)
 
+
+def isValidIfsc(ifsc):
+    """
+    Parameter: IFSC Code
+    Returns: True if correct and False if incorrect
+    """
+    ifsc = str(ifsc)
+    # More than 5 characters
+    if len(ifsc) < 6:
+        return False
+    # First 4 characters are alphabets (bank name)
+    if not ifsc[:4].isalpha():
+        return False
+    # 5th character is 0 (for future use by RBI)
+    if ifsc[4] != "0":
+        return False
+    # Return True if all checks are passed
+    return True
 
 # ========================== DATABASE OPERATIONS =========================== #
 
