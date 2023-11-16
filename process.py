@@ -130,7 +130,7 @@ def main():
             # Printing Final Data
             printInstitution(institution)
             print("")
-            printStudentDataFrame(student_data)
+            printStudentDataFrame(student_data, ifsc_dataset)
 
             # ------------------------------------------------ [ VERIFICATION ]
 
@@ -732,16 +732,18 @@ def printStudentData(student_data):
         i += 1
 
 
-def printStudentDataFrame(student_data):
+def printStudentDataFrame(student_data, ifsc_dataset):
     student_record = []
     for key, val in student_data.items():
 
-        # Check IFSC Validity
         ifsc = val[2]
-        if isValidIfsc(ifsc):
-            ifsc = f"{ifsc}✅"
-        else:
+        branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+
+        # Check IFSC Validity
+        if branch == "":
             ifsc = f"{ifsc}❌"
+        else:
+            ifsc = f"{ifsc}✅"
 
         row = [key+1, val[0], val[1], ifsc, val[3], val[4], val[5]]
         student_record.append(row)
