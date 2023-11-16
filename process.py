@@ -175,9 +175,17 @@ def main():
                         shutil.move(file, rejected_dir)
                         rejected_count += 1
             else:
-                print("❌ Moving for further Investigation.")
-                shutil.move(file, investigation_dir)
-                for_checking_count += 1
+                # Enter for Further Investigation after problem encountered
+                try:
+                    verification = input("Move for Investigation? (ret) ")
+                    if verification == "":
+                        print("❌ Moving for further Investigation.")
+                        shutil.move(file, investigation_dir)
+                        for_checking_count += 1
+                # Abrupt ending for tactical retreat purposes (ctrl+c)
+                except KeyboardInterrupt:
+                    print("Caught the Keyboard Interrupt ;D")
+                    sys.exit("Sayonara 👋")
         else:
             # Enter to Confirm
             try:
