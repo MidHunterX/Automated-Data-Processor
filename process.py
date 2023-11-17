@@ -117,12 +117,6 @@ def main():
                     district = getIndianState()
             print(f"✍️ Selected District: {district}\n")
 
-            # Validating Student Data for conversion to int equivalent
-            if isValidStudentStd(student_data):
-                valid_std = True
-            else:
-                print("⚠️ Cannot convert all standards to num equivalents :(")
-
             # Normalizing Student Data
             student_data = normalizeStudentData(student_data, ifsc_dataset)
 
@@ -135,15 +129,20 @@ def main():
 
             # [ INFO: SAFE SPACE FOR KEYBOARDINTERRUPT ] #
             try:
+
+                valid_std = isValidStudentStd(student_data)
+                print("")
                 # Enter to Confirm only if Student Class Valid
                 if valid_std is True:
-                    verification = input("\nCorrect? (ret / n): ")
+                    verification = input("Correct? (ret / n): ")
                 else:
                     # Moves to investigation_dir for checking
+                    print("⚠️ Cannot convert std to num equivalents :(")
                     verification = "n"
 
             # Abrupt ending for tactical retreat purposes (ctrl+c)
             except KeyboardInterrupt:
+
                 print("Caught the Keyboard Interrupt ;D")
                 if command == cmd_db:
                     # Close Connection to Database
