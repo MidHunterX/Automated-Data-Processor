@@ -148,7 +148,7 @@ def main():
                     # Close Connection to Database
                     print("Closing DB")
                     conn.close()
-                sys.exit("Sayonara 👋")
+                break
 
             # ------------------------------------------- [ POST VERIFICATION ]
 
@@ -173,7 +173,7 @@ def main():
                         shutil.move(file, rejected_dir)
                         rejected_count += 1
             else:
-                # Enter for Further Investigation after problem encountered
+                # Enter for Further Investigation after rejecting verification
                 try:
                     verification = input("Move for Investigation? (ret) ")
                     if verification == "":
@@ -183,9 +183,9 @@ def main():
                 # Abrupt ending for tactical retreat purposes (ctrl+c)
                 except KeyboardInterrupt:
                     print("Caught the Keyboard Interrupt ;D")
-                    sys.exit("Sayonara 👋")
+                    break
         else:
-            # Enter to Confirm
+            # Enter to Confirm after document formatting issues encountered
             try:
                 verification = input("Proceed? (ret) ")
                 if verification == "":
@@ -194,7 +194,7 @@ def main():
             # Abrupt ending for tactical retreat purposes (ctrl+c)
             except KeyboardInterrupt:
                 print("Caught the Keyboard Interrupt ;D")
-                sys.exit("Sayonara 👋")
+                break
 
     if command == cmd_db:
         # Close Connection to Database
