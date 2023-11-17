@@ -75,13 +75,7 @@ def main():
     file_list = getFileList(input_dir, [".docx", ".pdf"])
     for file in file_list:
 
-        try:
-            file_name, file_extension = os.path.basename(file).split(".")
-        except ValueError:
-            print(f"{file} Caused Value Error: Unpacking FileName, Extension")
-            break
-        print("")
-        printTextBox_Centered(f"📄 {file_name}.{file_extension}")
+        printFileNameHeader(file)
 
         # Flags
         proceed = False
@@ -602,15 +596,20 @@ def correctFormat(file):
     """
     Returns True if file is in correct Format
     """
-    file_name, file_extension = os.path.basename(file).split(".")
+    try:
+        file_name, file_extension = os.path.basename(file).split(".")
 
-    if file_extension == "docx":
-        docx_file = file
-        data = correctDocxFormat(docx_file)
+        if file_extension == "docx":
+            docx_file = file
+            data = correctDocxFormat(docx_file)
 
-    if file_extension == "pdf":
-        pdf_file = file
-        data = correctPdfFormat(pdf_file)
+        if file_extension == "pdf":
+            pdf_file = file
+            data = correctPdfFormat(pdf_file)
+
+    except ValueError:
+        print("⚠️ ValueError: Possible dot in file name")
+        data = False
 
     return data
 
@@ -692,6 +691,15 @@ def printTextBox_Centered(text):
     print(f"|{space} {text}{space + ' ' if freespace % 2 != 0 else space}|")
     # print(f"|{' ' * (box_width - 2)}|")
     print(horizontal_line)
+
+
+def printFileNameHeader(file):
+    try:
+        file_name, file_extension = os.path.basename(file).split(".")
+        print("")
+        printTextBox_Centered(f"📄 {file_name}.{file_extension}")
+    except ValueError:
+        printTextBox_Centered(f"📄 {file}")
 
 
 def writeToCSV(csv_file, institution, student_data):
