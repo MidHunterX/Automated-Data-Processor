@@ -124,8 +124,7 @@ def main():
                 print("⚠️ Cannot convert all standards to num equivalents :(")
 
             # Normalizing Student Data
-            student_data = normalizeStudentStd(student_data)
-            student_data = normalizeStudentBranch(student_data, ifsc_dataset)
+            student_data = normalizeStudentData(student_data, ifsc_dataset)
 
             # Printing Final Data
             printInstitution(institution)
@@ -1243,37 +1242,6 @@ def cleanStudentData(student_data):
     return data
 
 
-def normalizeStudentStd(student_data):
-    """
-    Parameter: Student Data from getStudentDetails()
-    Returns: A dictionary of tuples with corrected Student standard
-
-    data = {
-        0: (name, numeric_standard, ifsc, acc_no, holder, branch),
-        1: (name, numeric_standard, ifsc, acc_no, holder, branch),
-        2: (name, numeric_standard, ifsc, acc_no, holder, branch)
-    }
-    """
-    i = 0
-    data = {}
-    for key, value in student_data.items():
-        name = value[0]
-        standard = value[1]
-        ifsc = value[2]
-        acc_no = value[3]
-        holder = value[4]
-        branch = value[5]
-
-        # Normalizing Standard data to Int variant
-        standard = convertStdToNum(standard)
-
-        # Extracted data
-        data[i] = name, standard, ifsc, acc_no, holder, branch
-        i = i + 1
-
-    return data
-
-
 def getBranchFromIfsc(ifsc, ifsc_dataset):
     """
     Arguments: (ifsc, ifsc_dataset)
@@ -1345,18 +1313,18 @@ def getBranchFromPastedIfsc(ifsc_dataset):
     pyperclip.copy(text)
 
 
-def normalizeStudentBranch(student_data, ifsc_dataset):
+def normalizeStudentData(student_data, ifsc_dataset):
     """
     Parameter:
         - student_data: Student data from getStudentDetails()
         - ifsc_dataset: Razorpay IFSC Dataset from loadIfscDataset()
 
-    Returns: A dictionary of tuples with corrected Branch
+    Returns: A dictionary of tuples with corrected student data
 
     data = {
-        0: (name, standard, ifsc, acc_no, holder, razorpay_branch),
-        1: (name, standard, ifsc, acc_no, holder, razorpay_branch),
-        2: (name, standard, ifsc, acc_no, holder, razorpay_branch)
+        0: (name, standard, ifsc, acc_no, holder, branch),
+        1: (name, standard, ifsc, acc_no, holder, branch),
+        2: (name, standard, ifsc, acc_no, holder, branch)
     }
     """
     i = 0
@@ -1368,6 +1336,9 @@ def normalizeStudentBranch(student_data, ifsc_dataset):
         acc_no = value[3]
         holder = value[4]
         branch = value[5]
+
+        # Normalizing Standard standard to Int variant
+        standard = convertStdToNum(standard)
 
         # Normalizing Branch from IFSC using RazorPay Dataset
         razorpay_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
