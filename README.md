@@ -296,6 +296,22 @@ https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=695#A3
 - Many Schools uses open document formats (FOSS FTW)
 - Formatting Issues might most likely be Colleges (due to class validation). Remember, no. of colleges are sparse unlike schools.
 
+## How it works
+### 1. Form
+#### DOCX Document Form (Current method)
+Initially, word .docx format was chosen for form as it is the most commonly used format and therefore can be able to reach much wider audience.
+Rules and regulations are visible immediately on top of the form which aids in correct form filling procedures.
+All they have to do is, fill the form, save and sumbit it for further processing.
+This way of sending forms also gives flexibility when it comes to privacy. Those who prefers privacy can send it via personal email.
+Problem 1: Missing label "District" could impact the accuracy of sorting form based on districts
+Problem 2: Digital document like .docx might not be that accessible in poorer areas.
+
+#### Google Document
+This is a google docs version of DOCX Form. With this version, the sharing URL is taken for distribution.
+The "edit" at the end of URL is replaced with "copy" for obtaining the copy of Form for users rather than editing the original form.
+This can be useful for increasing accessability to users who are in poorer areas without a computer.
+Problem 1: Sharing requires some level of technical expertise.
+
 # Future Scope
 ## Cycling Automation Criteria
 - Institutuions initialises student list
