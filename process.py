@@ -1348,11 +1348,11 @@ def normalizeStudentData(student_data, ifsc_dataset):
         standard = convertStdToNum(standard)
 
         # Normalizing Branch from IFSC using RazorPay Dataset
-        razorpay_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+        rbi_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
 
-        # "," fix for long branch names
-        if razorpay_branch and "," not in razorpay_branch:
-            branch = razorpay_branch
+        # "," fix and long branch name fix
+        if rbi_branch and "," not in rbi_branch and len(rbi_branch) < 20:
+            branch = rbi_branch
 
         # Extracted data
         data[i] = name, standard, ifsc, acc_no, holder, branch
