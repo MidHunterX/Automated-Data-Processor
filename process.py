@@ -69,7 +69,7 @@ def main():
 
     if command == "database":
         # Open connection to Database
-        print("Connecting to Database")
+        print("ℹ️ Connecting to Database")
         conn = sqlite3.connect(db_file)
 
     file_list = getFileList(input_dir, [".docx", ".pdf"])
@@ -140,7 +140,7 @@ def main():
                 print("Caught the Keyboard Interrupt ;D")
                 if command == cmd_db:
                     # Close Connection to Database
-                    print("Closing DB")
+                    print("ℹ️ Closing DB")
                     conn.close()
                 break
 
@@ -192,7 +192,7 @@ def main():
 
     if command == cmd_db:
         # Close Connection to Database
-        print("Closing DB")
+        print("ℹ️ Closing DB")
         conn.close()
 
     # -------------------------------------------------------------- [ REPORT ]
@@ -1364,13 +1364,11 @@ def normalizeStudentData(student_data, ifsc_dataset):
 def isValidStudentStd(student_data):
     """
     Parameter: Student Data from getStudentDetails()
-    Returns: Boolean Value (True / False)
+    Returns: Boolean Value (True / False) if all standards are converted to int
     """
     data = []
     for key, value in student_data.items():
         standard = value[1]
-        # Extracted data
-        standard = convertStdToNum(standard)
         if type(standard) is int:
             data.append(True)
         else:
@@ -1463,12 +1461,12 @@ def writeToDB(conn, district, institution, student_data):
             variables = school_id, name, standard, ifsc, acc_no, holder, branch
             cursor.execute(studentSQL, variables)
 
-        print("Commiting Changes")
+        print("ℹ️ Commiting Changes")
         conn.commit()
         return True
 
     except IntegrityError as e:
-        print(f"IntegrityError: {e}")
+        print(f"🔴 IntegrityError: {e}")
         conn.rollback()
         return False
 
