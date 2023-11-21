@@ -222,6 +222,14 @@ def loadDistrictDataset():
     return district_list
 
 
+def convertStdToAmount(standard):
+    if standard >= 1 and standard <= 12:
+        return 600
+    if standard >= 13 and standard <= 17:
+        return 2000
+    return 0
+
+
 def initNestedDir(input_dir, nest_name):
     directory_path = os.path.join(input_dir, nest_name)
     if not os.path.exists(directory_path):
