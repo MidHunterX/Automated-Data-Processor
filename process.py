@@ -929,6 +929,26 @@ def guessDistrictFromIfscList(ifsc_list, ifsc_dataset):
 # ------------------------------------------------- [ CLASS NUMBER CONVERSION ]
 
 
+def convertNumToStd(standard):
+    """
+    Parameter: Student Standard / Class Number
+    Returns: String value if Num (eg: 11 = "+1", 13 = "1 DC")
+    """
+    std_data = {
+        11: "+1",
+        12: "+2",
+        13: "1 DC",
+        14: "2 DC",
+        15: "3 DC",
+        16: "1 PG",
+        17: "2 PG",
+    }
+    if standard in std_data.keys():
+        return std_data[standard]
+    else:
+        return standard
+
+
 def convertStdToNum(data):
     """
     Parameter: Student Standard / Class Number
