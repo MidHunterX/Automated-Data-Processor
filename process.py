@@ -12,6 +12,8 @@ from pandas import DataFrame        # Printing Tables
 from collections import Counter     # Most Common Value
 from prompt_toolkit import prompt   # Prompt for Autocompletion
 from sqlite3 import IntegrityError  # SQLite AccNo error
+from openpyxl.styles import Font    # Excel Font Styles
+from openpyxl import Workbook       # Excel Workbook
 from prompt_toolkit.completion import WordCompleter  # Autocompletion Engine
 
 
@@ -20,7 +22,9 @@ def main():
     # ------------------------------------------------- [ INIT FILES AND DIRS ]
 
     input_dir = "input"
+    db_file = "data\\database.db"
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
+    output_spreadsheet = "output.xlsx"
 
     # ------------------------------------------------------------ [ COMMANDS ]
 
@@ -30,6 +34,7 @@ def main():
     cmd_db = "database"
     cmd_form = "forms"
     cmd_ifsc = "ifsc"
+    cmd_excel = "spreadsheet"
 
     # PROCESS BRANCH
     if command == cmd_ifsc:
@@ -38,6 +43,15 @@ def main():
 
     district_user = getDistrictFromUser()
 
+    # PROCESS SPREADSHEET
+    if command == cmd_excel:
+        # Open connection to Database
+        conn = sqlite3.connect(db_file)
+        generateOutputSpreadsheet(conn, district_user, output_spreadsheet)
+        print(f"✅ {output_spreadsheet} generated for: {district_user}")
+        conn.close()
+        sys.exit()
+
     # Form Processing Variables
     if command == cmd_form:
         investigation_dir = initNestedDir(input_dir, "for checking")
@@ -45,7 +59,6 @@ def main():
 
     # Database Processing Variables
     elif command == cmd_db:
-        db_file = "data\\database.db"
         iso_date = datetime.date.today().isoformat()
         input_dir = initNestedDir(input_dir, district_user)
         output_dir = initNestedDir(input_dir, iso_date)
@@ -1502,6 +1515,91 @@ def writeToDB(conn, district, institution, student_data):
         print(f"Error: {e}")
         conn.rollback()
         return False
+
+
+# ============================ DATABASE OUTPUT ============================= #
+
+
+def generateOutputSpreadsheet(conn, district, xlsx_filename):
+    """
+    Arguments: (conn, district, xlsx_filename)
+        conn: Connection to database.db using sqlite3.connect()
+        district: Name of District as String
+        xlsx_filename: Name of output .XLSX file eg: "Example.xlsx"
+
+    Returns:
+        Generated Excel.xlsx file
+    """
+
+    cursor = conn.cursor()
+    wb = Workbook()
+    ws = wb.active
+
+    schoolSQL = """
+    SELECT * FROM Schools WHERE District = ?
+    """
+    studentSQL = """
+    SELECT * FROM Students WHERE SchoolID = ?
+    """
+
+    cursor.execute(schoolSQL, (district,))
+    schools_table = cursor.fetchall()
+
+# DISTRICT HEADING
+    ws.append([district.upper()])
+    row_number = ws.max_row
+    for cell in ws[row_number]:
+        cell.font = Font(bold=True, size=28)
+    ws.append([""])
+
+# TABLE HEADER
+    excel_header = ["Institution", "Name", "Class", "AccNo", "Amount"]
+    ws.append(excel_header)
+    row_number = ws.max_row
+    for cell in ws[row_number]:
+        cell.font = Font(bold=True, size=16)
+
+    for school in schools_table:
+        school_id = school[0]
+        school_name = school[1]
+        school_place = school[3]
+        school_no = school[4]
+        school_mail = school[5]
+        school_name_long = f"{school_name}, {school_place}"
+
+        # INSTITUTION DETAILS
+        if len(school_name_long) < 47:
+            ws.append([school_name_long])
+        else:
+            ws.append([school_name])
+        row_number = ws.max_row
+        for cell in ws[row_number]:
+            cell.font = Font(size=16)
+        if school_no:
+            ws.append([school_no])
+        if school_mail:
+            ws.append([school_mail])
+
+        cursor.execute(studentSQL, (school_id,))
+        student_table = cursor.fetchall()
+        for student in student_table:
+            st_name = student[2]
+            st_class = student[3]
+            # student_IFSC = student[4]
+            st_accno = student[5]
+            # st_holder = student[6]
+            # st_branch = student[7]
+
+            amount = convertStdToAmount(st_class)
+            st_class = convertNumToStd(st_class)
+
+            # STUDENT DETAILS
+            excel_student_row = ["", st_name, st_class, st_accno, amount]
+            ws.append(excel_student_row)
+
+        ws.append([""])
+
+    wb.save(xlsx_filename)
 
 
 # ============================= MAIN FUNCTION ============================== #
