@@ -4,4 +4,4 @@ input/
 data/database.db
 test.py
 output.csv
-output.xlxs
+output.xlsx
