@@ -19,44 +19,56 @@ from prompt_toolkit.completion import WordCompleter  # Autocompletion Engine
 
 def main():
 
+    # ----------------------------------------------------- [ RITE OF PASSAGE ]
+
+    command = getArgument()
+
+    cmd = {
+        "db": "database",
+        "form": "forms",
+        "ifsc": "ifsc",
+        "excel": "spreadsheet",
+        "bank": "neft",
+    }
+
+    if command in cmd.values():
+        pass
+    else:
+        print("Unrecognized Command 😕")
+        print("Available CMD:\n > " + "\n > ".join(map(str, cmd.values())))
+        sys.exit()
+
     # ------------------------------------------------- [ INIT FILES AND DIRS ]
 
     input_dir = "input"
     db_file = "data\\database.db"
     ifsc_dataset = loadIfscDataset("data\\IFSC.csv")
-    output_spreadsheet = "output.xlsx"
+    excel_file = "output.xlsx"
 
-    # ------------------------------------------------------------ [ COMMANDS ]
+    # ------------------------------------------------------ [ PROCESS BRANCH ]
 
-    command = getArgument()
-
-    # Command List
-    cmd_db = "database"
-    cmd_form = "forms"
-    cmd_ifsc = "ifsc"
-    cmd_excel = "spreadsheet"
-    cmd_bank = "neft"
-
-    # PROCESS BRANCH
-    if command == cmd_ifsc:
+    if command == cmd["ifsc"]:
         getBranchFromPastedIfsc(ifsc_dataset)
         sys.exit(0)
 
-    district_user = getDistrictFromUser()
+    # ------------------------------------------------- [ PROCESS SPREADSHEET ]
 
-    # PROCESS SPREADSHEET
-    if command == cmd_excel:
-        # Open connection to Database
-        generateOutputSpreadsheet(db_file, district_user, output_spreadsheet)
-        print(f"✅ {output_spreadsheet} generated for {district_user}")
+    if command == cmd["excel"]:
+        district_user = getDistrictFromUser()
+        generateOutputSpreadsheet(db_file, district_user, excel_file)
+        print(f"✅ {excel_file} generated for {district_user}")
         sys.exit()
 
-    # PROCESS NEFT
-    if command == cmd_bank:
-        # Open connection to Database
-        generateOutputNEFT(db_file, district_user, output_spreadsheet)
-        print(f"✅ {output_spreadsheet} generated for {district_user}")
+    # -------------------------------------------------------- [ PROCESS NEFT ]
+
+    if command == cmd["bank"]:
+        district_user = getDistrictFromUser()
+        generateOutputNEFT(db_file, district_user, excel_file)
+        print(f"✅ {excel_file} generated for {district_user}")
         sys.exit()
+
+    cmd_db = cmd["db"]
+    cmd_form = cmd["form"]
 
     # Form Processing Variables
     if command == cmd_form:
@@ -72,17 +84,12 @@ def main():
         formatting_dir = initNestedDir(input_dir, "formatting issues")
         rejected_dir = initNestedDir(input_dir, "rejected")
 
-    else:
-        print("Unrecognized Command 😕")
-        print(f"Try using: process {cmd_form} or process {cmd_db}")
-
     # ----------------------------------------------------- [ VARS FOR REPORT ]
 
     files_written = 0
     for_checking_count = 0
     incorrect_format_count = 0
-    if command == cmd_db:
-        rejected_count = 0
+    rejected_count = 0
 
     # ----------------------------------------------------- [ FILE PROCESSING ]
 
