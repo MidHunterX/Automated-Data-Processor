@@ -47,19 +47,15 @@ def main():
     # PROCESS SPREADSHEET
     if command == cmd_excel:
         # Open connection to Database
-        conn = sqlite3.connect(db_file)
-        generateOutputSpreadsheet(conn, district_user, output_spreadsheet)
+        generateOutputSpreadsheet(db_file, district_user, output_spreadsheet)
         print(f"✅ {output_spreadsheet} generated for {district_user}")
-        conn.close()
         sys.exit()
 
     # PROCESS NEFT
     if command == cmd_bank:
         # Open connection to Database
-        conn = sqlite3.connect(db_file)
-        generateOutputNEFT(conn, district_user, output_spreadsheet)
+        generateOutputNEFT(db_file, district_user, output_spreadsheet)
         print(f"✅ {output_spreadsheet} generated for {district_user}")
-        conn.close()
         sys.exit()
 
     # Form Processing Variables
@@ -1530,10 +1526,10 @@ def writeToDB(conn, district, institution, student_data):
 # ============================ DATABASE OUTPUT ============================= #
 
 
-def generateOutputSpreadsheet(conn, district, xlsx_filename):
+def generateOutputSpreadsheet(db_file, district, xlsx_filename):
     """
-    Arguments: (conn, district, xlsx_filename)
-        conn: Connection to database.db using sqlite3.connect()
+    Arguments: (db_file, district, xlsx_filename)
+        db_file: Path to SQLite Database
         district: Name of District as String
         xlsx_filename: Name of output .XLSX file eg: "Example.xlsx"
 
@@ -1541,6 +1537,7 @@ def generateOutputSpreadsheet(conn, district, xlsx_filename):
         Generated Excel.xlsx file
     """
 
+    conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     wb = Workbook()
     ws = wb.active
@@ -1610,18 +1607,20 @@ def generateOutputSpreadsheet(conn, district, xlsx_filename):
         ws.append([""])
 
     wb.save(xlsx_filename)
+    conn.close()
 
 
-def generateOutputNEFT(conn, district, xlsx_filename):
+def generateOutputNEFT(db_file, district, xlsx_filename):
     """
-    Arguments: (conn, district, institution, student_data)
-        conn: Connection to database.db using sqlite3.connect()
+    Arguments: (db_file, district, xlsx_filename)
+        db_file: Path to SQLite Database
         district: Name of District as String
         xlsx_filename: Name of output .XLSX file eg: "Example.xlsx"
 
     Returns: xlsx file with bank NEFT format
     """
 
+    conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     wb = Workbook()
     ws = wb.active
@@ -1688,6 +1687,7 @@ def generateOutputNEFT(conn, district, xlsx_filename):
             ws.append(st_row)
 
     wb.save(xlsx_filename)
+    conn.close()
 
 
 # ============================= MAIN FUNCTION ============================== #
