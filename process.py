@@ -35,6 +35,7 @@ def main():
     cmd_form = "forms"
     cmd_ifsc = "ifsc"
     cmd_excel = "spreadsheet"
+    cmd_bank = "neft"
 
     # PROCESS BRANCH
     if command == cmd_ifsc:
@@ -48,7 +49,16 @@ def main():
         # Open connection to Database
         conn = sqlite3.connect(db_file)
         generateOutputSpreadsheet(conn, district_user, output_spreadsheet)
-        print(f"✅ {output_spreadsheet} generated for: {district_user}")
+        print(f"✅ {output_spreadsheet} generated for {district_user}")
+        conn.close()
+        sys.exit()
+
+    # PROCESS NEFT
+    if command == cmd_bank:
+        # Open connection to Database
+        conn = sqlite3.connect(db_file)
+        generateOutputNEFT(conn, district_user, output_spreadsheet)
+        print(f"✅ {output_spreadsheet} generated for {district_user}")
         conn.close()
         sys.exit()
 
@@ -1598,6 +1608,84 @@ def generateOutputSpreadsheet(conn, district, xlsx_filename):
             ws.append(excel_student_row)
 
         ws.append([""])
+
+    wb.save(xlsx_filename)
+
+
+def generateOutputNEFT(conn, district, xlsx_filename):
+    """
+    Arguments: (conn, district, institution, student_data)
+        conn: Connection to database.db using sqlite3.connect()
+        district: Name of District as String
+        xlsx_filename: Name of output .XLSX file eg: "Example.xlsx"
+
+    Returns: xlsx file with bank NEFT format
+    """
+
+    cursor = conn.cursor()
+    wb = Workbook()
+    ws = wb.active
+
+    # --------------------------------------------------------- [ SQL Queries ]
+
+    if district != "Unknown":
+        schoolSQL = """
+        SELECT * FROM Schools WHERE District = ?
+        """
+        cursor.execute(schoolSQL, (district,))
+
+    elif district == "Unknown":
+        schoolSQL = """
+        SELECT *
+        FROM Schools
+        WHERE District NOT IN (
+        "Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha",
+        "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad",
+        "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasargod" );
+        """
+        cursor.execute(schoolSQL)
+
+    studentSQL = """
+    SELECT * FROM Students WHERE SchoolID = ?
+    """
+    schools_table = cursor.fetchall()
+
+    # -------------------------------------------------------- DISTRICT HEADING
+    if district != "Unknown":
+        ws.append([district.upper()])
+    elif district == "Unknown":
+        ws.append(["OTHER STATES"])
+    row_number = ws.max_row
+    for cell in ws[row_number]:
+        cell.font = Font(bold=True, size=28)
+    ws.append([""])
+
+    # ------------------------------------------------------------ TABLE HEADER
+    excel_header = ["AccNo", "AccType", "AccTitle", "Addr", "IFSC", "Amount"]
+    ws.append(excel_header)
+    row_number = ws.max_row
+    for cell in ws[row_number]:
+        cell.font = Font(bold=True, size=16)
+
+    # --------------------------------------------------------- STUDENT DETAILS
+    for school in schools_table:
+
+        school_id = school[0]
+        cursor.execute(studentSQL, (school_id,))
+        student_table = cursor.fetchall()
+
+        for student in student_table:
+            # st_name = student[2]
+            st_class = student[3]
+            st_IFSC = student[4]
+            st_accno = student[5]
+            st_holder = student[6]
+            st_branch = student[7]
+
+            amount = convertStdToAmount(st_class)
+
+            st_row = [st_accno, 10, st_holder, st_branch, st_IFSC, amount]
+            ws.append(st_row)
 
     wb.save(xlsx_filename)
 
