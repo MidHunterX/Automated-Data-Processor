@@ -1,3 +1,25 @@
+## Problems Faced
+### Cyclomatic Complexity too high
+To reduce cyclomatic complexity, we have to reduce the number of if, else, for loops etc.
+In main(), there are multiple conditions checking for executing different commands passed.
+```python
+    # Command List
+    cmd_db = "database"
+    cmd_form = "forms"
+    cmd_ifsc = "ifsc"
+    cmd_excel = "spreadsheet"
+    cmd_bank = "neft"
+
+    # PROCESS BRANCH
+    if command == cmd_ifsc:
+        # do ifsc stuffs
+    if command == cmd_excel:
+        # do excel stuffs
+    . . .
+```
+All these multiple command checking can be reduced by implementing a simple State Transition Machine.
+Before doing that, all the functions here needs to be encapsulated for modularity.
+
 ## Usage
 
 Command | Description
