@@ -1,6 +1,6 @@
 ![](./img/header.png)
 
-<img src="./img/Scholar Waifu.png" align="right">
+<img src="./img/scholar_waifu.png" align="right">
 
 # Scholar CAP
 
