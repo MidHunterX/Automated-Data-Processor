@@ -6,10 +6,6 @@ Scholar CAP (Computer Aided Processing) is a comprehensive toolset designed to s
 
 ## Usage
 
-This is a CLI tool so the features are accessed using the following commands:
-
-### Commands
-
 | Command             | Description                                           |
 | ------------------- | ----------------------------------------------------- |
 | process forms       | Parse, Clean, Validate and Organize Forms             |
