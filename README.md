@@ -1,3 +1,5 @@
+![](./img/header.png)
+
 # Scholar CAP
 
 Your All-in-One Solution for Student Scholarship Processing
