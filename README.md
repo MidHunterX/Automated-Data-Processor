@@ -1,24 +1,22 @@
+# Scholar CAP
+
+Your All-in-One Solution for Student Scholarship Processing
+
+ScholarCAP is a comprehensive toolset designed to simplify the processing of student scholarship forms, specifically focusing on banking details. From initial data extraction and cleaning to verification, correction of typos, and the generation of NEFT formats, ScholarTool ensures a seamless workflow for efficiently handling student information. This versatile project empowers users to enhance accuracy and organization throughout the scholarship processing journey.
+
 ## Usage
 
 This is a CLI tool so the features are accessed using the following commands:
 
 ### Commands
 
-| Command     | Description                                           |
-| ----------- | ----------------------------------------------------- |
-| forms       | Parse, Clean, Validate and Organize Forms             |
-| database    | Commits organized forms into a Database               |
-| ifsc        | Converts pasted IFSC code into Branch name            |
-| spreadsheet | Converts database into custom styled xlsx spreadsheet |
-| neft        | Converts database into spreadsheet for NEFT transfers |
-
-### Syntax
-
-To use the above commands, you use it in your CLI like this:
-
-```
-process <command>
-```
+| Command             | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| process forms       | Parse, Clean, Validate and Organize Forms             |
+| process database    | Commits organized forms into a Database               |
+| process ifsc        | Converts pasted IFSC code into Branch name            |
+| process spreadsheet | Converts database into custom styled xlsx spreadsheet |
+| process neft        | Converts database into spreadsheet for NEFT transfers |
 
 ## How it works
 
