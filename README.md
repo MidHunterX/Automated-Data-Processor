@@ -48,4 +48,10 @@ In cases of incorrect formatting, the script identifies errors, prompting the us
 
 **IFSC to Branch Converter**
 
-This script simplifies the process of converting a list of IFSC codes to their corresponding branch names. Users can conveniently paste IFSC codes, and the script retrieves the associated branch names. The results are then copied to the clipboard for easy use. This tool streamlines the conversion task, providing a quick and efficient solution for handling IFSC data.
+This tool simplifies the process of converting a list of IFSC codes to their corresponding branch names. Users can conveniently paste IFSC codes, and the script retrieves the associated branch names. The results are then copied to the clipboard for easy use. This tool streamlines the conversion task, providing a quick and efficient solution for handling IFSC data.
+
+### Process Spreadsheet
+
+**Excel Spreadsheet Generator**
+
+This tool generates an Excel spreadsheet summarizing school and student information stored in database. The user specifies district name. The script dynamically fetches data based on the district, organizing it into a clear and structured spreadsheet. For each school, the spreadsheet includes institution details such as contact information and a list of students with their names, classes, account numbers, branches, and amounts.
