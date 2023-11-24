@@ -2,7 +2,7 @@
 
 Your All-in-One Solution for Student Scholarship Processing
 
-Scholar CAP (Computer Aided Processing) is a comprehensive toolset designed to simplify the processing of student scholarship forms, specifically focusing on banking details. From initial data extraction and cleaning to verification, correction of typos, and the generation of NEFT formats, ScholarTool ensures a seamless workflow for efficiently handling student information. This versatile project empowers users to enhance accuracy and organization throughout the scholarship processing journey.
+Scholar CAP (Computer Aided Processing) is a comprehensive toolset designed to simplify the processing of student scholarship forms, specifically focusing on banking details. From initial data extraction and cleaning to verification, correction of typos, and the generation of NEFT formats. Scholar Toolsets included in Scholar CAP ensures a seamless workflow for efficiently handling student information. This versatile project empowers users to enhance accuracy and organization throughout the scholarship processing journey.
 
 ## Usage
 
