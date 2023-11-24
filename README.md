@@ -55,3 +55,9 @@ This tool simplifies the process of converting a list of IFSC codes to their cor
 **Excel Spreadsheet Generator**
 
 This tool generates an Excel spreadsheet summarizing school and student information stored in database. The user specifies district name. The script dynamically fetches data based on the district, organizing it into a clear and structured spreadsheet. For each school, the spreadsheet includes institution details such as contact information and a list of students with their names, classes, account numbers, branches, and amounts.
+
+### Process NEFT
+
+**NEFT Format Generator for School Data**
+
+This tool generates a spreadsheet in the NEFT (National Electronic Funds Transfer) format, summarizing student's banking information stored in database. Users provide the district name. The script dynamically fetches data based on the district, organizing it into a structured spreadsheet compatible with NEFT standards. The generated spreadsheet includes essential details such as account numbers, account types, account titles, addresses, IFSC codes, and transaction amounts for each student.
