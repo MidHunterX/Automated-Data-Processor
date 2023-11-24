@@ -1,5 +1,7 @@
 ![](./img/header.png)
 
+<img src="./img/Scholar Waifu.png" align="right">
+
 # Scholar CAP
 
 Your All-in-One Solution for Student Scholarship Processing
