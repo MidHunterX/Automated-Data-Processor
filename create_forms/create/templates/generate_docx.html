@@ -1,68 +1,73 @@
 <!doctype html>
 <html>
+
   <head>
 
     <title>Generate Docx</title>
     <style>
-        /* Add custom CSS styles */
-        .form-row {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .form-row label, .form-row input {
+        .custom-form-row label, .custom-form-row input {
             flex: 1;
-            /* margin-right: 10px; */
         }
     </style>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 
   </head>
 
   <body>
-    <form method="post" enctype="multipart/form-data">
+
+    <form class="container" id="generateDocxForm" method="post" enctype="multipart/form-data">
       {% csrf_token %} 
 
-      <h1>Institution Details</h1>
-      <table>
-        <tr>
-          <td>Institution Name</td>
-          <td>{{ institution_form.name }}</td>
-        </tr>
-        <tr>
-          <td>Place</td>
-          <td>{{ institution_form.place }}</td>
-        </tr>
-        <tr>
-          <td>District</td>
-          <td>{{ institution_form.district }}</td>
-        </tr>
-        <tr>
-          <td>Phone no</td>
-          <td>{{ institution_form.phone_no }}</td>
-        </tr>
-        <tr>
-          <td>Email</td>
-          <td>{{ institution_form.email }}</td>
-        </tr>
-      </table>
-
       <!-- {{ institution_form.as_p }} -->
+      <h1>Institution Details</h1>
+      {% bootstrap_field institution_form.name show_label=False %}
+      {% bootstrap_field institution_form.place show_label=False %}
+      {% bootstrap_field institution_form.district show_label=False %}
+      {% bootstrap_field institution_form.phone_no show_label=False %}
+      {% bootstrap_field institution_form.email show_label=False %}
+
+      <br>
 
       <h1>Student Details</h1>
 
-      <div class="form-row">
+      <div class="d-flex justify-content-around">
         <p>Student Name</p>
         <p>Class</p>
         <p>IFSC Code</p>
+        <p>Account No</p>
+        <p>Account Holder</p>
+        <p>Branch</p>
       </div>
 
-      <div class="form-row">
-          {{ student_form.student_name }}
-          {{ student_form.student_class }}
-          {{ student_form.student_ifsc }}
+      {{ student_formset.management_form }}
+      {% for form in student_formset.forms %}
+
+      <div class="d-flex justify-content-around custom-form-row">
+        {{ form.student_name }}
+        {{ form.student_class }}
+        {{ form.student_ifsc }}
+        {{ form.student_account }}
+        {{ form.student_holder }}
+        {{ form.student_branch }}
       </div>
 
-      <button type="submit">Generate Docx</button>
+      {% endfor %}
+
+      <br>
+
+      <button type="submit" class="btn btn-success">Generate Docx</button>
+      <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+
     </form>
+
+
+    <script>
+    function clearForm() {
+      document.getElementById("generateDocxForm").reset();
+    }
+    </script>
+
   </body>
 </html>

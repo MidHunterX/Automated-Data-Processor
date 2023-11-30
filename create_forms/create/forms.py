@@ -18,7 +18,19 @@ class InstitutionForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['student_name', 'student_class', 'student_ifsc']
+        fields = [
+            'student_name',
+            'student_class',
+            'student_ifsc',
+            'student_account',
+            'student_holder',
+            'student_branch',
+        ]
 
 
-StudentFormSet = forms.inlineformset_factory(Institution, Student, form=StudentForm, extra=12)
+StudentFormSet = forms.inlineformset_factory(
+    Institution, Student,
+    form=StudentForm,
+    extra=12,
+    can_delete=False
+)
