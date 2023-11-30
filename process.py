@@ -7,9 +7,9 @@ import riteOfPassage
 import processNEFT
 from sys import exit
 
+command = riteOfPassage.main()
 cmd = config.initVarCmd()
 var = config.initVarCommon()
-command = riteOfPassage.main()
 
 if command == cmd["form"]:
     processForms.main(var)
