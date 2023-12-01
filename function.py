@@ -512,6 +512,10 @@ def normalizeStudentData(student_data):
         holder = value[4]
         branch = value[5]
 
+        # Empty Acc Holder fix
+        if holder == "":
+            holder = name
+
         # Normalizing Standard standard to Int variant
         standard = convertStdToNum(standard)
 
@@ -519,7 +523,7 @@ def normalizeStudentData(student_data):
         rbi_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
 
         # "," fix and long branch name fix
-        if rbi_branch and "," not in rbi_branch and len(rbi_branch) < 30:
+        if rbi_branch and "," not in rbi_branch and len(rbi_branch) < 40:
             branch = rbi_branch
 
         # Extracted data
