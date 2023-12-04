@@ -74,6 +74,7 @@ def main(var):
             # ---------------------------------------- [ INCORRECT FORMATTING ]
 
             else:
+                fn.printFileNameHeader(file)
                 print("⚠️ Formatting error detected!")
                 input("Move for checking Format? (ret) ")
                 print("❌ Moving for Re-Formatting.")
