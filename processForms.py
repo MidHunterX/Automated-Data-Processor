@@ -16,13 +16,17 @@ def main(var):
     try:
         for file in file_list:
 
-            fn.printFileNameHeader(file)
             if fn.correctFormat(file):
 
                 # -------------------------------------------- [ FORM PARSING ]
 
                 institution = fn.getInstitutionDetails(file)
                 student_data = fn.getStudentDetails(file)
+
+                # --------------------------------------- [ FILENAME RENAMING ]
+
+                file = fn.renameFilenameToInstitution(file, institution)
+                fn.printFileNameHeader(file)
 
                 # ----------------------------------------- [ DATA PROCESSING ]
 

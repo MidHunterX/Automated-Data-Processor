@@ -675,6 +675,19 @@ def cleanStudentData(student_data):
     return data
 
 
+def renameFilenameToInstitution(file, institution):
+    dir, filename = os.path.splitext(file)[0].split("\\")
+    extension = os.path.splitext(file)[1]
+
+    new_name = institution["name"].replace(".", "").replace(",", "")
+    new_name = f"{new_name}{extension}"
+
+    new_path = os.path.join(dir, new_name)
+    os.rename(file, new_path)
+
+    return new_path
+
+
 # ========================== [ @PARSER_FUNCTIONS ] ========================== #
 
 
