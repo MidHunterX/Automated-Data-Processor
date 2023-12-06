@@ -6,9 +6,10 @@ import function as fn
 
 def main(var):
     db_file = var["db_file"]
-    xlsx_file = var["excel_file"]
-
     district = fn.getDistrictFromUser()
+    # xlsx_file = var["excel_file"]
+    xlsx_file = f"{district}.xlsx"
+
     generateOutputSpreadsheet(db_file, district, xlsx_file)
     print(f"✅ {xlsx_file} generated for {district}")
 
