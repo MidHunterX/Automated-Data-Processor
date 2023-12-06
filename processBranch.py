@@ -1,8 +1,9 @@
 import sys          # Command line arguments and exit
 import pyperclip    # Clipboard handling
+from function import var
 
 
-def main(var):
+def main():
     ifsc_dataset = var["ifsc_dataset"]
     getBranchFromPastedIfsc(ifsc_dataset)
 

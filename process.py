@@ -9,24 +9,23 @@ from sys import exit
 
 command = riteOfPassage.main()
 cmd = config.initVarCmd()
-var = config.initVarCommon()
 
 if command == cmd["form"]:
-    processForms.main(var)
+    processForms.main()
     exit(0)
 
 if command == cmd["db"]:
-    processDatabase.main(var)
+    processDatabase.main()
     exit(0)
 
 if command == cmd["ifsc"]:
-    processBranch.main(var)
+    processBranch.main()
     exit(0)
 
 if command == cmd["excel"]:
-    processSpreadsheet.main(var)
+    processSpreadsheet.main()
     exit(0)
 
 if command == cmd["bank"]:
-    processNEFT.main(var)
+    processNEFT.main()
     exit(0)

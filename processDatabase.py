@@ -2,12 +2,10 @@ import sqlite3      # SQLite DB operations
 import datetime     # ISO Date format
 import shutil       # Copying and Moving files
 import function as fn
-import config
+from function import var
 
 
-def main(var):
-
-    var = config.initVarCommon()
+def main():
 
     district_user = fn.getDistrictFromUser()
 

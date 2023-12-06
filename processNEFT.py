@@ -2,9 +2,10 @@ import sqlite3      # SQLite DB operations
 from openpyxl import Workbook       # Excel Workbook
 from openpyxl.styles import Font    # Excel Font Styles
 import function as fn
+from function import var
 
 
-def main(var):
+def main():
     db_file = var["db_file"]
     district = fn.getDistrictFromUser()
     # xlsx_file = var["excel_file"]

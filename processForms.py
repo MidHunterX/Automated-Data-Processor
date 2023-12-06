@@ -1,8 +1,9 @@
 import shutil       # Copying and Moving files
 import function as fn
+from function import var
 
 
-def main(var):
+def main():
 
     input_dir = var["input_dir"]
     investigation_dir = fn.initNestedDir(input_dir, "for checking")
