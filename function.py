@@ -567,10 +567,11 @@ def guessDistrictFromIfscList(ifsc_list):
     district_dataset = var["district_dataset"]
     if district not in district_dataset:
         count = Counter(district_list)
-        mostCommon_list = count.most_common(3)
+        mostCommon_list = count.most_common()
         for i in mostCommon_list:
             if i[0] in district_dataset:
                 district = i[0]
+                break
 
     return district
 
