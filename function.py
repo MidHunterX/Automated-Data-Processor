@@ -3,6 +3,7 @@ from sqlite3 import IntegrityError  # SQLite AccNo error
 from prompt_toolkit import prompt   # Prompt for Autocompletion
 from collections import Counter     # Most Common Value
 from pandas import DataFrame        # Printing Tables
+from sys import exit
 import os           # Directory path support
 import docx         # Docx parsing
 import glob         # Finding files with extensions
@@ -1133,6 +1134,10 @@ def getDistrictFromUser():
         if data <= 13 and data >= 0:
             district = district_dataset[data]
         return district
+
+    except KeyboardInterrupt:
+        print("Caught the Interrupt ;)")
+        exit()
 
     except ValueError:
         return district
