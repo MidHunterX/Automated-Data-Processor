@@ -9,7 +9,6 @@ Returns:
         "db_file": "data\\database.db",
         "ifsc_dataset": loadIfscDataset("data\\IFSC.csv"),
         "district_dataset": loadDistrictDataset(),
-        "excel_file": "output.xlsx",
     }
     """
     var = {
@@ -17,7 +16,6 @@ Returns:
         "db_file": "data\\database.db",
         "ifsc_dataset": loadIfscDataset("data\\IFSC.csv"),
         "district_dataset": loadDistrictDataset(),
-        "excel_file": "output.xlsx",
     }
     return var
 
