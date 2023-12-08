@@ -6,13 +6,15 @@ from function import var
 
 
 def main():
+    input_dir = var["input_dir"]
     db_file = var["db_file"]
-    district = fn.getDistrictFromUser()
-    # xlsx_file = var["excel_file"]
-    xlsx_file = f"{district}.xlsx"
+    district_dataset = var["district_dataset"]
+    spreadsheet_dir = fn.initNestedDir(input_dir, "Output Spreadsheet")
 
-    generateOutputSpreadsheet(db_file, district, xlsx_file)
-    print(f"✅ {xlsx_file} generated for {district}")
+    for district in district_dataset:
+        xlsx_file = f"{spreadsheet_dir}\\{district}.xlsx"
+        generateOutputSpreadsheet(db_file, district, xlsx_file)
+        print(f"✅ {xlsx_file} generated for {district}")
 
 
 def generateOutputSpreadsheet(db_file, district, xlsx_file):
