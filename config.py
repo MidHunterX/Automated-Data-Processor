@@ -29,6 +29,7 @@ Returns:
         "ifsc": "ifsc",
         "excel": "spreadsheet",
         "bank": "neft",
+        "final": "final",
     }
     """
     cmd = {
@@ -37,6 +38,7 @@ Returns:
         "ifsc": "ifsc",
         "excel": "spreadsheet",
         "bank": "neft",
+        "final": "final",
     }
     return cmd
 

@@ -5,6 +5,7 @@ import processSpreadsheet
 import processDatabase
 import riteOfPassage
 import processNEFT
+import processFinal
 from sys import exit
 
 command = riteOfPassage.main()
@@ -20,6 +21,10 @@ if command == cmd["db"]:
 
 if command == cmd["ifsc"]:
     processBranch.main()
+    exit(0)
+
+if command == cmd["final"]:
+    processFinal.main()
     exit(0)
 
 if command == cmd["excel"]:
