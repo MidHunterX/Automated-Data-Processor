@@ -4,12 +4,66 @@ from prompt_toolkit import prompt   # Prompt for Autocompletion
 from collections import Counter     # Most Common Value
 from pandas import DataFrame        # Printing Tables
 from sys import exit
+import threading    # Multithreading Stuff
+import csv          # CSV file manipulation
 import os           # Directory path support
 import docx         # Docx parsing
 import glob         # Finding files with extensions
 import pdfplumber   # PDF parsing
 import config as cfg
 var = cfg.initVarCommon()
+
+
+# =========================== [ @VAR_FUNCTIONS ] =========================== #
+
+
+def loadIfscDataset(csv_file):
+    """
+    Parameter: CSV Dataset from RazorPay
+    Returns: Dataset Dictionary loaded into memory
+
+    dataset[row['IFSC']] = {
+        'Bank': row['BANK'],
+        'Branch': row['BRANCH'],
+        'Centre': row['CENTRE'],
+        'District': row['DISTRICT'],
+        'State': row['STATE'],
+        'Address': row['ADDRESS'],
+        'City': row['CITY'],
+    }
+    """
+    dataset = {}
+    with open(csv_file, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            dataset[row['IFSC']] = {
+                'Bank': row['BANK'],
+                'Branch': row['BRANCH'],
+                'Centre': row['CENTRE'],
+                'District': row['DISTRICT'],
+                'State': row['STATE'],
+                'Address': row['ADDRESS'],
+                'City': row['CITY'],
+            }
+    return dataset
+
+
+def updateIfscInVar():
+    var["ifsc_dataset"] = loadIfscDataset(var["ifsc_dataset"])
+
+
+def getDistrictFromUser():
+
+    csv_thread = threading.Thread(target=updateIfscInVar)
+    csv_thread.start()
+
+    # Get district while other thread works
+    district = getDistrictInput()
+
+    # Wait for updateIfscInVar() thread to finish
+    csv_thread.join()
+
+    return district
 
 
 # ========================= [ @DATABASE_FUNCTIONS ] ========================= #
@@ -1118,7 +1172,7 @@ def initNestedDir(input_dir, nest_name):
     return directory_path
 
 
-def getDistrictFromUser():
+def getDistrictInput():
     try:
         print("""
         1: TVM    6: IDK   11: KKD
