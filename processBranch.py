@@ -1,19 +1,29 @@
 import sys          # Command line arguments and exit
 import pyperclip    # Clipboard handling
+import threading    # Multithreading Stuff
 from function import var
+from function import updateIfscInVar
 
 
 def main():
-    ifsc_dataset = var["ifsc_dataset"]
-    getBranchFromPastedIfsc(ifsc_dataset)
+    getBranchFromPastedIfsc()
 
 
-def getBranchFromPastedIfsc(ifsc_dataset):
+def getBranchFromPastedIfsc():
 
+    csv_thread = threading.Thread(target=updateIfscInVar)
+    csv_thread.start()
+
+    # Get Input while thread loads dataset values
     print("")
     print("📝 Paste IFSC and press Ctrl+Z")
     print("-------------------------------")
     text = read_pasted_text()
+
+    # Wait for updateIfscInVar() thread to finish
+    csv_thread.join()
+    ifsc_dataset = var["ifsc_dataset"]
+
     branch_list = []
     for ifsc in text:
         ifsc = ifsc.strip()
