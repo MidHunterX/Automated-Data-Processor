@@ -39,7 +39,7 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
 
     # -------------------------------------------------------- [ TABLE HEADER ]
 
-    tab_header = ["Contacts", "Name", "Class", "AccNo", "Branch", "Amount"]
+    tab_header = ["Contacts", "Name", "Class", "AccNo", "IFSC", "Branch", "Amount"]
     ws.append(tab_header)
     row_number = ws.max_row
     for cell in ws[row_number]:
@@ -114,15 +114,15 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
             for student in student_table:
                 st_name = student[2]
                 st_cls = student[3]
-                # student_IFSC = student[4]
-                st_acno = student[5]
+                st_IFSC = student[4]
+                st_acc = student[5]
                 # st_holder = student[6]
                 st_br = student[7]
 
-                amount = fn.convertStdToAmount(st_cls)
+                amt = fn.convertStdToAmount(st_cls)
                 st_cls = fn.convertNumToStd(st_cls)
 
-                excel_st_row = ["", st_name, st_cls, st_acno, st_br, amount]
+                excel_st_row = ["", st_name, st_cls, st_acc, st_IFSC, st_br, amt]
                 ws.append(excel_st_row)
 
             # Space after each school entry

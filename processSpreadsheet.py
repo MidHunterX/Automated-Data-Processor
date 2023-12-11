@@ -68,7 +68,7 @@ def generateOutputSpreadsheet(db_file, district, xlsx_file):
     ws.append([""])
 
     # ------------------------------------------------------------ TABLE HEADER
-    excel_header = ["Contacts", "Name", "Class", "AccNo", "Branch", "Amount"]
+    excel_header = ["Contacts", "Name", "Class", "AccNo", "IFSC", "Branch", "Amount"]
     ws.append(excel_header)
     row_number = ws.max_row
     for cell in ws[row_number]:
@@ -105,16 +105,16 @@ def generateOutputSpreadsheet(db_file, district, xlsx_file):
         student_table = cursor.fetchall()
         for student in student_table:
             st_name = student[2]
-            st_class = student[3]
-            # student_IFSC = student[4]
-            st_accno = student[5]
+            st_cls = student[3]
+            st_IFSC = student[4]
+            st_acc = student[5]
             # st_holder = student[6]
-            st_branch = student[7]
+            st_br = student[7]
 
-            amount = fn.convertStdToAmount(st_class)
-            st_class = fn.convertNumToStd(st_class)
+            amt = fn.convertStdToAmount(st_cls)
+            st_cls = fn.convertNumToStd(st_cls)
 
-            excel_st_row = ["", st_name, st_class, st_accno, st_branch, amount]
+            excel_st_row = ["", st_name, st_cls, st_acc, st_IFSC, st_br, amt]
             ws.append(excel_st_row)
 
         # Space after each school entry
