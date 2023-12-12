@@ -39,8 +39,8 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
 
     # -------------------------------------------------------- [ TABLE HEADER ]
 
-    tab_header = ["Contacts", "Name", "Class", "AccNo", "IFSC", "Branch", "Amount"]
-    ws.append(tab_header)
+    th = ["Contacts", "Name", "Class", "AccNo", "IFSC", "Branch", "Amount"]
+    ws.append(th)
     row_number = ws.max_row
     for cell in ws[row_number]:
         cell.font = Font(bold=True, size=16)
@@ -56,7 +56,7 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
             """
             cursor.execute(schoolSQL, (district,))
 
-        elif district == "Unknown":
+        else:
             schoolSQL = """
             SELECT *
             FROM Schools
@@ -75,7 +75,7 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
         # ---------------------------------------------------- DISTRICT HEADING
         if district != "Unknown":
             ws.append([district.upper()])
-        elif district == "Unknown":
+        else:
             ws.append(["OTHER STATES"])
         row_number = ws.max_row
         for cell in ws[row_number]:
@@ -122,8 +122,8 @@ def generateFinalSpreadsheet(db_file, xlsx_file):
                 amt = fn.convertStdToAmount(st_cls)
                 st_cls = fn.convertNumToStd(st_cls)
 
-                excel_st_row = ["", st_name, st_cls, st_acc, st_IFSC, st_br, amt]
-                ws.append(excel_st_row)
+                st_row = ["", st_name, st_cls, st_acc, st_IFSC, st_br, amt]
+                ws.append(st_row)
 
             # Space after each school entry
             ws.append([""])
