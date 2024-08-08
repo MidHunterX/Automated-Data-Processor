@@ -159,6 +159,7 @@ def getIndianState():
         "Haryana",
         "Himachal Pradesh",
         "Jharkhand",
+        "Jammu and Kashmir",
         "Karnataka",
         "Kerala",
         "Madhya Pradesh",
@@ -176,7 +177,8 @@ def getIndianState():
         "Tripura",
         "Uttar Pradesh",
         "Uttarakhand",
-        "West Bengal"
+        "West Bengal",
+        "Puducherry"
     ]
 
     state_completer = WordCompleter(indian_states)
@@ -578,7 +580,7 @@ def normalizeStudentData(student_data):
         rbi_branch = getBranchFromIfsc(ifsc, ifsc_dataset)
 
         # "," fix and long branch name fix
-        if rbi_branch and "," not in rbi_branch and len(rbi_branch) < 40:
+        if rbi_branch and "," not in rbi_branch and len(rbi_branch) < 30:
             branch = rbi_branch
 
         # Extracted data
