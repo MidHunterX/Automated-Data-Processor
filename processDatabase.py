@@ -50,18 +50,17 @@ def main():
                 district_guess = fn.guessDistrictFromIfscList(ifsc_list)
                 print(f"💡 Possible District: {district_guess}")
 
+                # Printing Data
+                fn.printInstitution(institution)
+                print("")
+                fn.printStudentDataFrame(student_data)
+                print("")
+
                 # Deciding User District vs Guessed District
                 district = district_user
                 if district == "Unknown":
                     district = fn.getIndianState()
                 print(f"✍️ Selected District: {district}\n")
-
-                # ------------------------------------------- [ DATA PRINTING ]
-
-                fn.printInstitution(institution)
-                print("")
-                fn.printStudentDataFrame(student_data)
-                print("")
 
                 # ------------------------------------ [ VERIFICATION SECTION ]
 
