@@ -17,6 +17,8 @@ def main():
     try:
         for file in file_list:
 
+            print(file)
+
             if fn.correctFormat(file):
 
                 # -------------------------------------------- [ FORM PARSING ]
