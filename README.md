@@ -4,25 +4,32 @@
 
 # Scholar CAP
 
-Your All-in-One Solution for Student Scholarship Processing
+All-in-One Solution for Student Scholarship Processing
 
 Scholar CAP (Computer Aided Processing) is a comprehensive toolset designed to simplify the processing of student scholarship forms, specifically focusing on banking details. From initial data extraction and cleaning to verification, correction of typos, and the generation of NEFT formats. Scholar Toolsets included in Scholar CAP ensures a seamless workflow for efficiently handling student information. This versatile project empowers users to enhance accuracy and organization throughout the scholarship processing journey.
 
-## Usage
+## 🖱️ Usage
 
-| Command             | Description                                           |
-| ------------------- | ----------------------------------------------------- |
-| process forms       | Parse, Clean, Validate and Organize Forms             |
-| process database    | Commits organized forms into a Database               |
-| process ifsc        | Converts pasted IFSC code into Branch name            |
-| process spreadsheet | Converts database into custom styled xlsx spreadsheet |
-| process neft        | Converts database into spreadsheet for NEFT transfers |
+```bash
+python process.py <argument>
+```
 
-## How it works
+| Argument    | Description                                           |
+| ----------- | ----------------------------------------------------- |
+| form        | Parse, Clean, Validate and Organize Forms             |
+| database    | Commits organized forms into a Database               |
+| ifsc        | Converts pasted IFSC code into Branch name            |
+| spreadsheet | Converts database into custom styled xlsx spreadsheet |
+| neft        | Converts database into spreadsheet for NEFT transfers |
 
-### Process Forms
+## 🏗️ Working Process
 
-**Data Processing and Verification**
+<details>
+    <summary><strong>Data Processing and Verification</strong></summary>
+
+```bash
+python process.py form
+```
 
 It is designed for efficient processing and verification of student data collected from various institutions. The code begins by extracting details about the institution and student from files situated in "input" directory. The subsequent data processing steps involve cleaning and normalizing student information for accurate analysis.
 
@@ -32,9 +39,14 @@ The verification section prompts the user to confirm the accuracy of the student
 
 This script streamlines the workflow of handling student information, ensuring data accuracy and facilitating organized storage based on district categorization.
 
-### Process Database
+</details>
 
-**Data Verification and Database Integration**
+<details>
+    <summary><strong>Data Verification and Database Integration</strong></summary>
+
+```bash
+python process.py database
+```
 
 It is designed to be used after organizing forms by executing `process forms`. The primary focus is on verifying the correctness of student data and integrating it into a database. The script begins by checking if the file adheres to the correct format. If the format is correct, the user is prompted to specify the district for the organized data, with the option to automatically determine it based on the Indian state if unspecified.
 
@@ -42,20 +54,37 @@ The script then prints details about the institution and the processed student d
 
 In cases of incorrect formatting, the script identifies errors, prompting the user for manual investigation and reformatting. This script provides a comprehensive solution for verifying and integrating student data into a database, ensuring data accuracy and facilitating efficient data management.
 
-### Process IFSC
+</details>
 
-**IFSC to Branch Converter**
+<details>
+    <summary><strong>IFSC to Branch Converter</strong></summary>
+
+```bash
+python process.py ifsc
+```
 
 This tool simplifies the process of converting a list of IFSC codes to their corresponding branch names. Users can conveniently paste IFSC codes, and the script retrieves the associated branch names. The results are then copied to the clipboard for easy use. This tool streamlines the conversion task, providing a quick and efficient solution for handling IFSC data.
 
-### Process Spreadsheet
+</details>
 
-**Excel Spreadsheet Generator**
+<details>
+    <summary><strong>Excel Spreadsheet Generator</strong></summary>
+
+```bash
+python process.py spreadsheet
+```
 
 This tool generates an Excel spreadsheet summarizing school and student information stored in database. The user specifies district name. The script dynamically fetches data based on the district, organizing it into a clear and structured spreadsheet. For each school, the spreadsheet includes institution details such as contact information and a list of students with their names, classes, account numbers, branches, and amounts.
 
-### Process NEFT
+</details>
 
-**NEFT Format Generator for School Data**
+<details>
+    <summary><strong>NEFT Format Generator for School Data</strong></summary>
+
+```bash
+python process.py neft
+```
 
 This tool generates a spreadsheet in the NEFT (National Electronic Funds Transfer) format, summarizing student's banking information stored in database. Users provide the district name. The script dynamically fetches data based on the district, organizing it into a structured spreadsheet compatible with NEFT standards. The generated spreadsheet includes essential details such as account numbers, account types, account titles, addresses, IFSC codes, and transaction amounts for each student.
+
+</details>
