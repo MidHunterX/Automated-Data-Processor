@@ -1,6 +1,7 @@
 import sqlite3      # SQLite DB operations
 from openpyxl import Workbook       # Excel Workbook
 from openpyxl.styles import Font    # Excel Font Styles
+from pathlib import Path            # Modern OS Path
 import function as fn
 from function import var
 
@@ -12,7 +13,7 @@ def main():
     spreadsheet_dir = fn.initNestedDir(input_dir, "Output Spreadsheet")
 
     for district in district_dataset:
-        xlsx_file = f"{spreadsheet_dir}\\{district}.xlsx"
+        xlsx_file = Path(spreadsheet_dir) / f"{district}.xlsx"
         generateOutputSpreadsheet(db_file, district, xlsx_file)
         print(f"✅ {xlsx_file} generated for {district}")
 

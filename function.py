@@ -3,6 +3,7 @@ from sqlite3 import IntegrityError  # SQLite AccNo error
 from prompt_toolkit import prompt   # Prompt for Autocompletion
 from collections import Counter     # Most Common Value
 from pandas import DataFrame        # Printing Tables
+from pathlib import Path            # OS Independent filepath
 from sys import exit
 import threading    # Multithreading Stuff
 import csv          # CSV file manipulation
@@ -49,7 +50,7 @@ def loadIfscDataset(csv_file):
 
 
 def updateIfscInVar():
-    var["ifsc_dataset"] = loadIfscDataset(var["ifsc_dataset"])
+    var["ifsc_dataset"] = loadIfscDataset(var["ifsc_dataset_path"])
 
 
 def getDistrictFromUser():
@@ -734,14 +735,16 @@ def cleanStudentData(student_data):
 
 
 def renameFilenameToInstitution(file, institution):
-    dir, filename = os.path.splitext(file)[0].split("\\")
-    extension = os.path.splitext(file)[1]
+    file_path = Path(file)
+
+    dir = file_path.parent
+    extension = file_path.suffix
 
     new_name = institution["name"].replace(".", "").replace(",", "")
     new_name = f"{new_name}{extension}"
 
-    new_path = os.path.join(dir, new_name)
-    os.rename(file, new_path)
+    new_path = dir / new_name
+    file_path.rename(new_path)
 
     return new_path
 
