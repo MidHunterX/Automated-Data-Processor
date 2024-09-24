@@ -1,18 +1,25 @@
-import shutil       # Copying and Moving files
+import sqlite3  # SQLite DB operations
+import shutil  # Copying and Moving files
 import function as fn
 from function import var
 
 
 def main():
 
+    db_file = var["db_file"]
     input_dir = var["input_dir"]
     investigation_dir = fn.initNestedDir(input_dir, "for checking")
     formatting_dir = fn.initNestedDir(input_dir, "formatting issues")
+    rejected_dir = fn.initNestedDir(input_dir, "rejected")
     district_user = fn.getDistrictFromUser()
     files_written = 0
     for_checking_count = 0
     incorrect_format_count = 0
+    rejected_count = 0
     file_list = fn.getFileList(input_dir, [".docx", ".pdf"])
+
+    print("ℹ️ Connecting to Database")
+    cursor = sqlite3.connect(db_file).cursor()
 
     try:
         for file in file_list:
@@ -42,6 +49,15 @@ def main():
                 ifsc_list = fn.getStudentIfscList(student_data)
                 district_guess = fn.guessDistrictFromIfscList(ifsc_list)
                 print(f"💡 Possible District: {district_guess}")
+
+                # Check for duplicate accounts in database
+                if fn.checkExistingAccounts(student_data, cursor):
+                    print("❌ Duplicate account detected in Database!")
+                    shutil.move(file, rejected_dir)
+                    rejected_count += 1
+                    continue  # Skip to next iteration
+                else:
+                    pass
 
                 # Deciding User District vs Guessed District
                 district = district_user
@@ -89,12 +105,16 @@ def main():
 
     # -------------------------------------------------------------- [ REPORT ]
 
-    print("")
-    horizontal_line = "-"*80
-    print(horizontal_line)
-    print("FINAL REPORT".center(80))
-    print(horizontal_line)
-    print(f"Files Accepted    : {files_written}".center(80))
-    print(f"For Checking      : {for_checking_count}".center(80))
-    print(f"Formatting Issues : {incorrect_format_count}".center(80))
-    print(horizontal_line)
+    finally:
+        print("ℹ️ Closing DB")
+        cursor.close()
+        print("")
+        horizontal_line = "-" * 80
+        print(horizontal_line)
+        print("FINAL REPORT".center(80))
+        print(horizontal_line)
+        print(f"Files Accepted    : {files_written}".center(80))
+        print(f"For Checking      : {for_checking_count}".center(80))
+        print(f"Formatting Issues : {incorrect_format_count}".center(80))
+        print(f"Rejected by DB    : {rejected_count}".center(80))
+        print(horizontal_line)

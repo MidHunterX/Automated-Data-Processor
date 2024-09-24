@@ -752,6 +752,27 @@ def renameFilenameToInstitution(file, institution):
 # ========================== [ @PARSER_FUNCTIONS ] ========================== #
 
 
+def checkExistingAccounts(data, cursor):
+    """
+    Parameters:
+    - data (dict): output of getStudentDetails()
+    - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
+
+    Returns:
+    - bool: True if any account number is found, False otherwise.
+    """
+
+    acc_nos = [entry[3] for entry in data.values()]  # entry[3] is acc_no
+    query = """
+    SELECT COUNT(1)
+    FROM Students
+    WHERE AccNo IN ({})
+    """.format(','.join('?' for _ in acc_nos))
+    cursor.execute(query, acc_nos)
+    result = cursor.fetchone()[0]
+    return result > 0
+
+
 def getInstitutionDetails(file):
     """
     Parameters: Supported File
