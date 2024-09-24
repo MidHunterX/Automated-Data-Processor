@@ -124,7 +124,7 @@ def writeToDB(conn, district, institution, student_data):
         VALUES ( ?, ?, ?, ?, ?, ?, ?)
         """
 
-        for key, value in student_data.items():
+        for _, value in student_data.items():
             name = value[0]
             standard = value[1]
             ifsc = value[2]
@@ -202,7 +202,7 @@ def printInstitution(institution):
 
 def printStudentData(student_data):
     i = 1
-    for key, value in student_data.items():
+    for _, value in student_data.items():
         name = value[0]
         standard = value[1]
         ifsc = value[2]
@@ -563,7 +563,7 @@ def normalizeStudentData(student_data):
     ifsc_dataset = var["ifsc_dataset"]
     i = 0
     data = {}
-    for key, value in student_data.items():
+    for _, value in student_data.items():
         name = value[0]
         standard = value[1]
         ifsc = value[2]
@@ -689,7 +689,7 @@ def getStudentIfscList(student_data):
     """
     i = 0
     ifsc = []
-    for key, value in student_data.items():
+    for _, value in student_data.items():
         ifsc.append(value[2])
         i += 1
     return ifsc
@@ -708,7 +708,7 @@ def cleanStudentData(student_data):
     """
     i = 0
     data = {}
-    for key, value in student_data.items():
+    for _, value in student_data.items():
         name = value[0]
         standard = value[1]
         ifsc = value[2]
@@ -832,7 +832,8 @@ def getInstitutionDetails(file):
         "email": email_id
     }
     """
-    file_name, file_extension = os.path.basename(file).split(".")
+    _, file_extension = os.path.basename(file).split(".")
+    data = {}
 
     if file_extension == "docx":
         docx_file = file
@@ -856,7 +857,8 @@ def getStudentDetails(file):
         2: (name, standard, ifsc, acc_no, holder, branch)
     }
     """
-    file_name, file_extension = os.path.basename(file).split(".")
+    _, file_extension = os.path.basename(file).split(".")
+    data = {}
 
     if file_extension == "docx":
         docx_file = file
@@ -1011,6 +1013,11 @@ def getInstitutionDetailsPdf(pdf_file):
         "email": email_id
     }
     """
+    institution_details = ""
+    name_of_institution = ""
+    place = ""
+    phone_number = ""
+    email_id = ""
 
     with pdfplumber.open(pdf_file) as pdf:
         for page in pdf.pages:
@@ -1059,7 +1066,7 @@ def isValidStudentStd(student_data):
     Returns: Boolean Value (True / False) if all standards are converted to int
     """
     data = []
-    for key, value in student_data.items():
+    for _, value in student_data.items():
         standard = value[1]
         if type(standard) is int:
             data.append(True)
@@ -1073,8 +1080,9 @@ def correctFormat(file):
     """
     Returns True if file is in correct Format
     """
+    data = False
     try:
-        file_name, file_extension = os.path.basename(file).split(".")
+        _, file_extension = os.path.basename(file).split(".")
 
         if file_extension == "docx":
             docx_file = file
@@ -1086,7 +1094,6 @@ def correctFormat(file):
 
     except ValueError:
         print("⚠️ ValueError: Possible dot in file name")
-        data = False
 
     return data
 
@@ -1245,6 +1252,7 @@ def initNestedDir(input_dir, nest_name):
 
 
 def getDistrictInput():
+    district = "Unknown"
     try:
         print("""
         1: TVM    6: IDK   11: KKD
@@ -1254,7 +1262,6 @@ def getDistrictInput():
         5: KTM   10: MLP    0: Unknown
         """)
         district_dataset = var["district_dataset"]
-        district = "Unknown"
         data = int(input("Enter District No: "))
         data -= 1
         if data <= 13 and data >= 0:
