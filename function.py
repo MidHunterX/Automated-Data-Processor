@@ -817,7 +817,7 @@ def printExistingAccounts(comparison_list):
         'STD', 'Name', 'Acc No', 'IFSC', 'Branch',
     ])
 
-    print(tabulate.tabulate(df, headers='keys', tablefmt='grid', showindex=False))
+    print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
 
 def getInstitutionDetails(file):
