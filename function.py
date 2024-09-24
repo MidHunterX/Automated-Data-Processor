@@ -820,6 +820,44 @@ def printExistingAccounts(comparison_list):
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
 
+def printExistingAccountsDiff(existingAccounts, studentData):
+    """
+    Parameters:
+    - existingAccounts (list): Output of getExistingAccounts()
+    - studentData (dict): Output of getStudentDetails()
+
+    Prints:
+    - Table showing difference between database data and the provided data side by side.
+    """
+
+    comparison_list = []
+    data_by_acc = {entry[3]: entry for entry in studentData.values()}
+
+    for db_class, db_name, db_acc, db_ifsc, db_branch in existingAccounts:
+        if db_acc in data_by_acc:
+            data_name = data_by_acc[db_acc][0]
+            data_class = data_by_acc[db_acc][1]
+            data_ifsc = data_by_acc[db_acc][2]
+            data_acc = data_by_acc[db_acc][3]
+
+            data_tuple = (
+                f"{db_name} -> {data_name}" if db_name != data_name else data_name,
+                f"{db_class} -> {data_class}" if db_class != data_class else data_class,
+                f"{db_acc} -> {data_acc}" if db_acc != data_acc else data_acc,
+                f"{db_ifsc} -> {data_ifsc}" if db_ifsc != data_ifsc else data_ifsc,
+                f"{db_branch}"
+            )
+
+            # Append both db and data tuples for comparison
+            comparison_list.append(data_tuple)
+
+    df = DataFrame(comparison_list, columns=[
+        'STD', 'Name', 'Acc No', 'IFSC', 'Branch',
+    ])
+
+    print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
+
+
 def getInstitutionDetails(file):
     """
     Parameters: Supported File
