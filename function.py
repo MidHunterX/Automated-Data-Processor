@@ -773,6 +773,56 @@ def checkExistingAccounts(data, cursor):
     return result > 0
 
 
+def getExistingAccounts(data, cursor):
+    """
+    Parameters:
+    - data (dict): output of getStudentDetails()
+    - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
+
+    Returns:
+    - list: A list of tuples containing details from both the database and data.
+        [(db_acc_no, db_name, db_ifsc, db_branch, data_acc_no, data_name, data_ifsc, data_branch)]
+    """
+
+    acc_nos = [entry[3] for entry in data.values()]  # entry[3] is acc_no
+    query = """
+    SELECT Class, StudentName, IFSC, Branch
+    FROM Students
+    WHERE AccNo IN ({})
+    """.format(','.join('?' for _ in acc_nos))
+
+    cursor.execute(query, acc_nos)
+    existing_accounts = cursor.fetchall()
+
+    comparison_list = []
+    for db_class, db_name, db_ifsc, db_branch in existing_accounts:
+        for entry in data.values():
+            data_class, data_name, data_ifsc, data_branch = entry[1], entry[0], entry[2], entry[5]
+            if db_class == data_class:
+                comparison_list.append(
+                    (db_class, db_name, db_ifsc, db_branch, data_class, data_name, data_ifsc, data_branch)
+                )
+
+    return comparison_list
+
+
+def printExistingAccounts(comparison_list):
+    """
+    Parameters:
+    - comparison_list (list): Output of getExistingAccounts()
+
+    Prints:
+    - Table showing database data and the provided data side by side.
+    """
+
+    df = DataFrame(comparison_list, columns=[
+        'DB Class', 'DB Name', 'DB IFSC', 'DB Branch',
+        'Data Class', 'Data Name', 'Data IFSC', 'Data Branch'
+    ])
+
+    print(df.to_string(index=False))
+
+
 def getInstitutionDetails(file):
     """
     Parameters: Supported File

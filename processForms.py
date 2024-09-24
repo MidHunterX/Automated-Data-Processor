@@ -53,6 +53,9 @@ def main():
                 # Check for duplicate accounts in database
                 if fn.checkExistingAccounts(student_data, cursor):
                     print("❌ Duplicate account detected in Database!")
+                    duplicate_accounts = fn.getExistingAccounts(student_data, cursor)
+                    fn.printExistingAccounts(duplicate_accounts)
+                    input("Move to Rejected? (ret) ")
                     shutil.move(file, rejected_dir)
                     rejected_count += 1
                     continue  # Skip to next iteration
