@@ -24,7 +24,7 @@ def main():
     try:
         for file in file_list:
 
-            print(file)
+            print(f"\n{file}")
 
             if fn.correctFormat(file):
 

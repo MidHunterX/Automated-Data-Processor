@@ -11,6 +11,7 @@ import os           # Directory path support
 import docx         # Docx parsing
 import glob         # Finding files with extensions
 import pdfplumber   # PDF parsing
+import tabulate     # CLI Table Borders
 import config as cfg
 var = cfg.initVarCommon()
 
@@ -780,13 +781,13 @@ def getExistingAccounts(data, cursor):
     - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
 
     Returns:
-    - list: A list of tuples containing details from both the database and data.
-        [(db_acc_no, db_name, db_ifsc, db_branch, data_acc_no, data_name, data_ifsc, data_branch)]
+    - list: A list of tuples containing existing accounts.
+        data = [(db_class, db_name, db_acc, db_ifsc, db_branch)]
     """
 
     acc_nos = [entry[3] for entry in data.values()]  # entry[3] is acc_no
     query = """
-    SELECT Class, StudentName, IFSC, Branch
+    SELECT Class, StudentName, AccNo, IFSC, Branch
     FROM Students
     WHERE AccNo IN ({})
     """.format(','.join('?' for _ in acc_nos))
@@ -794,16 +795,13 @@ def getExistingAccounts(data, cursor):
     cursor.execute(query, acc_nos)
     existing_accounts = cursor.fetchall()
 
-    comparison_list = []
-    for db_class, db_name, db_ifsc, db_branch in existing_accounts:
-        for entry in data.values():
-            data_class, data_name, data_ifsc, data_branch = entry[1], entry[0], entry[2], entry[5]
-            if db_class == data_class:
-                comparison_list.append(
-                    (db_class, db_name, db_ifsc, db_branch, data_class, data_name, data_ifsc, data_branch)
-                )
+    data = []
+    for db_class, db_name, db_acc, db_ifsc, db_branch in existing_accounts:
+        data.append(
+            (db_class, db_name, db_acc, db_ifsc, db_branch)
+        )
 
-    return comparison_list
+    return data
 
 
 def printExistingAccounts(comparison_list):
@@ -816,11 +814,10 @@ def printExistingAccounts(comparison_list):
     """
 
     df = DataFrame(comparison_list, columns=[
-        'DB Class', 'DB Name', 'DB IFSC', 'DB Branch',
-        'Data Class', 'Data Name', 'Data IFSC', 'Data Branch'
+        'STD', 'Name', 'Acc No', 'IFSC', 'Branch',
     ])
 
-    print(df.to_string(index=False))
+    print(tabulate.tabulate(df, headers='keys', tablefmt='grid', showindex=False))
 
 
 def getInstitutionDetails(file):
@@ -1212,7 +1209,6 @@ def printTextBox_Centered(text):
 def printFileNameHeader(file):
     try:
         file_name, file_extension = os.path.basename(file).split(".")
-        print("")
         printTextBox_Centered(f"📄 {file_name}.{file_extension}")
     except ValueError:
         printTextBox_Centered(f"📄 {file}")
