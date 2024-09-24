@@ -1196,6 +1196,31 @@ def correctDocxFormat(docx_file):
 # ========================== [ @OTHER_FUNCTIONS ] ========================== #
 
 
+def sanitizeFilename(file):
+    """
+    Parameter:
+        - file (str): filename.extension
+    Returns:
+        - file (str): sanitized_filename.extension
+    """
+    try:
+        file_name, file_extension = os.path.basename(file).split(".")
+    except ValueError:
+        path = Path(file)
+        file_name = path.stem
+        file_extension = path.suffix
+
+        sanitized_file_name = file_name.replace(".", "")
+        new_file_name = sanitized_file_name + file_extension
+        new_file_path = path.with_name(new_file_name)
+        path.rename(new_file_path)
+
+        file = new_file_path
+        print(f"📝 File renamed to: {file}")
+
+    return file
+
+
 def printTextBox_Centered(text):
     box_width = 80
 

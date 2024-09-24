@@ -25,6 +25,7 @@ def main():
         for file in file_list:
 
             print(f"\n{file}")
+            file = fn.sanitizeFilename(file)
 
             if fn.correctFormat(file):
 
