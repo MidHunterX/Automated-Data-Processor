@@ -852,7 +852,7 @@ def printExistingAccountsDiff(existingAccounts, studentData):
             comparison_list.append(data_tuple)
 
     df = DataFrame(comparison_list, columns=[
-        'STD', 'Name', 'Acc No', 'IFSC', 'Branch',
+        'Name', 'STD', 'Acc No', 'IFSC', 'Branch',
     ])
 
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
