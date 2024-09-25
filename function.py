@@ -857,6 +857,25 @@ def printExistingAccountsDiff(existingAccounts, studentData):
 
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
+    newly_added_list = []
+    for student in studentData.values():
+        name = student[0]
+        standard = student[1]
+        ifsc = student[2]
+        acc_no = student[3]
+        branch = student[5]
+
+        # if acc_no exists in any of the existingAccounts tuples
+        if not any(acc == acc_no for _, _, acc, _, _ in existingAccounts):
+            newly_added_list.append((name, standard, acc_no, ifsc, branch))
+
+    if newly_added_list:
+        new_df = DataFrame(newly_added_list, columns=[
+            'Name', 'STD', 'Acc No', 'IFSC', 'Branch',
+        ])
+        print("ℹ️ New students in form:")
+        print(tabulate.tabulate(new_df, tablefmt='rounded_outline', showindex=False))
+
 
 def getInstitutionDetails(file):
     """
