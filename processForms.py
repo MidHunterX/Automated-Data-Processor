@@ -18,7 +18,7 @@ def main():
     rejected_count = 0
     file_list = fn.getFileList(input_dir, [".docx", ".pdf"])
 
-    print("ℹ️ Connecting to Database")
+    print("🔵 Connecting to Database")
     cursor = sqlite3.connect(db_file).cursor()
 
     try:
@@ -67,7 +67,7 @@ def main():
                 district = district_user
                 if district == "Unknown":
                     district = district_guess
-                print(f"✍️ Selected District: {district}\n")
+                print(f"🔔 Selected District: {district}\n")
 
                 # ------------------------------------------- [ DATA PRINTING ]
 
@@ -98,7 +98,7 @@ def main():
 
             else:
                 fn.printFileNameHeader(file)
-                print("⚠️ Formatting error detected!")
+                print("🔵 Formatting error detected!")
                 input("Move for checking Format? (ret) ")
                 print("❌ Moving for Re-Formatting.")
                 shutil.move(file, formatting_dir)
@@ -110,7 +110,7 @@ def main():
     # -------------------------------------------------------------- [ REPORT ]
 
     finally:
-        print("ℹ️ Closing DB")
+        print("🔵 Closing DB")
         cursor.close()
         print("")
         horizontal_line = "-" * 80

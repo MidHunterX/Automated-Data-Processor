@@ -134,7 +134,7 @@ def writeToDB(conn, district, institution, student_data):
             variables = school_id, name, standard, ifsc, acc_no, holder, branch
             cursor.execute(studentSQL, variables)
 
-        print("ℹ️ Commiting Changes")
+        print("🔵 Commiting Changes")
         conn.commit()
         return True
 
@@ -908,7 +908,7 @@ def printExistingAccountsDiff(studentData, existingAccounts):
         new_df = DataFrame(newly_added_list, columns=[
             'Name', 'STD', 'IFSC', 'Acc No', 'Holder', 'Branch',
         ])
-        print("ℹ️ New students in form:")
+        print("👤 New students in form:")
         print(tabulate.tabulate(new_df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
 
