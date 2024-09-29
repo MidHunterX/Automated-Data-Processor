@@ -830,21 +830,31 @@ def printExistingAccountsDiff(existingAccounts, studentData):
     - Table showing difference between database data and the provided data side by side.
     """
 
+    ifsc_dataset = var["ifsc_dataset"]
+
     comparison_list = []
     data_by_acc = {entry[3]: entry for entry in studentData.values()}
 
     for db_class, db_name, db_acc, db_ifsc, db_branch in existingAccounts:
         if db_acc in data_by_acc:
-            data_name = data_by_acc[db_acc][0]
-            data_class = data_by_acc[db_acc][1]
-            data_ifsc = data_by_acc[db_acc][2]
-            data_acc = data_by_acc[db_acc][3]
+            name = data_by_acc[db_acc][0]
+            std = data_by_acc[db_acc][1]
+            ifsc = data_by_acc[db_acc][2]
+            accno = data_by_acc[db_acc][3]
+
+            branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+
+            # Check IFSC Validity
+            if branch == "":
+                ifsc_check = f"{ifsc}❌"
+            else:
+                ifsc_check = f"{ifsc}✅"
 
             data_tuple = (
-                f"{db_name} -> {data_name}" if db_name != data_name else data_name,
-                f"{db_class} -> {data_class}" if db_class != data_class else data_class,
-                f"{db_acc} -> {data_acc}" if db_acc != data_acc else data_acc,
-                f"{db_ifsc} -> {data_ifsc}" if db_ifsc != data_ifsc else data_ifsc,
+                f"{db_name} -> {name}" if db_name != name else name,
+                f"{db_class} -> {std}" if db_class != std else std,
+                f"{db_acc} -> {accno}" if db_acc != accno else accno,
+                f"{db_ifsc} -> {ifsc_check}" if db_ifsc != ifsc else ifsc,
                 f"{db_branch}"
             )
 
@@ -867,6 +877,12 @@ def printExistingAccountsDiff(existingAccounts, studentData):
 
         # if acc_no exists in any of the existingAccounts tuples
         if not any(acc == acc_no for _, _, acc, _, _ in existingAccounts):
+            branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+            if branch == "":
+                ifsc = f"{ifsc}❌"
+            else:
+                ifsc = f"{ifsc}✅"
+
             newly_added_list.append((name, standard, acc_no, ifsc, branch))
 
     if newly_added_list:
