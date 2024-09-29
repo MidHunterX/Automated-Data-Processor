@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError  # SQLite AccNo error
 import sqlite3  # SQLite DB operations
 import shutil  # Copying and Moving files
 import function as fn
@@ -19,7 +20,8 @@ def main():
     file_list = fn.getFileList(input_dir, [".docx", ".pdf"])
 
     print("🔵 Connecting to Database")
-    cursor = sqlite3.connect(db_file).cursor()
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
 
     try:
         for file in file_list:
@@ -55,13 +57,37 @@ def main():
                 if fn.checkExistingAccounts(student_data, cursor):
                     print("❌ Duplicate account detected in Database!")
                     duplicate_accounts = fn.getExistingAccounts(student_data, cursor)
+
+                    school_id = fn.identifySchool(duplicate_accounts, cursor)
+                    if school_id == None:
+                        print("🤨 Students detected in different schools.")
+                        input("Move for Investigation? (ret) ")
+                        print("❌ Moving for further Investigation.")
+                        shutil.move(file, investigation_dir)
+                        for_checking_count += 1
+                        continue  # Skip to next iteration
+
+                    print(f"School ID: {school_id}")
+
                     fn.printExistingAccountsDiff(student_data, duplicate_accounts)
+
+                    # Update student vacancies
+                    vacancy_id, vacancy_list = fn.findVacancySpots(school_id, cursor)
+                    if school_id == vacancy_id and len(vacancy_list) > 0:
+                        print(f"Vacancies: {vacancy_list}")
+                        input("Fill vacancies? (ret) ")
+                        conn.execute("BEGIN TRANSACTION")
+                        added_students, rejected_students = fn.updateClassVacancies(school_id, vacancy_list, student_data, cursor)
+                        conn.commit()
+                        print("✅ Added Students:")
+                        fn.printStudentDataFrame2(added_students)
+                        print("❌ Rejected Students:")
+                        fn.printStudentDataFrame2(rejected_students)
+
                     input("Move to Rejected? (ret) ")
                     shutil.move(file, rejected_dir)
                     rejected_count += 1
                     continue  # Skip to next iteration
-                else:
-                    pass
 
                 # Deciding User District vs Guessed District
                 district = district_user
@@ -106,12 +132,21 @@ def main():
 
     except KeyboardInterrupt:
         print("Caught the Keyboard Interrupt ;D")
+    except IntegrityError as e:
+        print(f"🔴 IntegrityError: {e}")
+        conn.rollback()
+        return False
+
+    except Exception as e:
+        print(f"Error: {e}")
+        conn.rollback()
+        return False
 
     # -------------------------------------------------------------- [ REPORT ]
 
     finally:
         print("🔵 Closing DB")
-        cursor.close()
+        conn.close()
         print("")
         horizontal_line = "-" * 80
         print(horizontal_line)
