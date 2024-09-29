@@ -750,7 +750,7 @@ def renameFilenameToInstitution(file, institution):
     return new_path
 
 
-# ========================== [ @PARSER_FUNCTIONS ] ========================== #
+# ========================== [ @DIFF_FUNCTIONS ] ========================== #
 
 
 def checkExistingAccounts(data, cursor):
@@ -774,10 +774,10 @@ def checkExistingAccounts(data, cursor):
     return result > 0
 
 
-def getExistingAccounts(data, cursor):
+def getExistingAccounts(studentDetails, cursor):
     """
     Parameters:
-    - data (dict): output of getStudentDetails()
+    - studentDetails (dict): output of getStudentDetails()
     - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
 
     Returns:
@@ -785,7 +785,7 @@ def getExistingAccounts(data, cursor):
         data = [(db_class, db_name, db_acc, db_ifsc, db_branch)]
     """
 
-    acc_nos = [entry[3] for entry in data.values()]  # entry[3] is acc_no
+    acc_nos = [entry[3] for entry in studentDetails.values()]  # entry[3] is acc_no
     query = """
     SELECT Class, StudentName, AccNo, IFSC, Branch
     FROM Students
@@ -795,13 +795,41 @@ def getExistingAccounts(data, cursor):
     cursor.execute(query, acc_nos)
     existing_accounts = cursor.fetchall()
 
-    data = []
+    studentDetails = []
     for db_class, db_name, db_acc, db_ifsc, db_branch in existing_accounts:
-        data.append(
+        studentDetails.append(
             (db_class, db_name, db_acc, db_ifsc, db_branch)
         )
 
-    return data
+    return studentDetails
+
+
+def getNonExistingAccounts(studentDetails, existingAccounts):
+    """
+    Parameters:
+    - studentDetails (dict): output of getStudentDetails()
+    - existingAccounts (list): output of getExistingAccounts()
+
+    Returns:
+    - list: A list of tuples containing newly recieved students.
+        data = [(name, standard, ifsc, acc_no, holder, branch)]
+    """
+    existing_acc_nos = {entry[2] for entry in existingAccounts}
+
+    non_existing_accounts = []
+
+    for student in studentDetails.values():
+        name = student[0]
+        standard = student[1]
+        ifsc = student[2]
+        acc_no = student[3]
+        holder = student[4]
+        branch = student[5]
+
+        if acc_no not in existing_acc_nos:
+            non_existing_accounts.append((name, standard, ifsc, acc_no, holder, branch))
+
+    return non_existing_accounts
 
 
 def printExistingAccounts(comparison_list):
@@ -820,7 +848,7 @@ def printExistingAccounts(comparison_list):
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
 
-def printExistingAccountsDiff(existingAccounts, studentData):
+def printExistingAccountsDiff(studentData, existingAccounts):
     """
     Parameters:
     - existingAccounts (list): Output of getExistingAccounts()
@@ -846,9 +874,9 @@ def printExistingAccountsDiff(existingAccounts, studentData):
 
             # Check IFSC Validity
             if branch == "":
-                ifsc_check = f"{ifsc}❌"
+                ifsc_check = f"{ifsc} ❌"
             else:
-                ifsc_check = f"{ifsc}✅"
+                ifsc_check = f"{ifsc} ✅"
 
             data_tuple = (
                 f"{db_name} -> {name}" if db_name != name else name,
@@ -864,33 +892,27 @@ def printExistingAccountsDiff(existingAccounts, studentData):
     df = DataFrame(comparison_list, columns=[
         'Name', 'STD', 'Acc No', 'IFSC', 'Branch',
     ])
-
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
 
     newly_added_list = []
-    for student in studentData.values():
-        name = student[0]
-        standard = student[1]
-        ifsc = student[2]
-        acc_no = student[3]
-        branch = student[5]
-
-        # if acc_no exists in any of the existingAccounts tuples
-        if not any(acc == acc_no for _, _, acc, _, _ in existingAccounts):
-            branch = getBranchFromIfsc(ifsc, ifsc_dataset)
-            if branch == "":
-                ifsc = f"{ifsc}❌"
-            else:
-                ifsc = f"{ifsc}✅"
-
-            newly_added_list.append((name, standard, acc_no, ifsc, branch))
+    nonExistingAccounts = getNonExistingAccounts(studentData, existingAccounts)
+    for name, standard, ifsc, acc_no, holder, branch in nonExistingAccounts:
+        branch = getBranchFromIfsc(ifsc, ifsc_dataset)
+        if branch == "":
+            ifsc = f"{ifsc} ❌"
+        else:
+            ifsc = f"{ifsc} ✅"
+        newly_added_list.append((name, standard, ifsc, acc_no, holder, branch))
 
     if newly_added_list:
         new_df = DataFrame(newly_added_list, columns=[
-            'Name', 'STD', 'Acc No', 'IFSC', 'Branch',
+            'Name', 'STD', 'IFSC', 'Acc No', 'Holder', 'Branch',
         ])
         print("ℹ️ New students in form:")
-        print(tabulate.tabulate(new_df, tablefmt='rounded_outline', showindex=False))
+        print(tabulate.tabulate(new_df, headers='keys', tablefmt='rounded_outline', showindex=False))
+
+
+# ========================== [ @PARSER_FUNCTIONS ] ========================== #
 
 
 def getInstitutionDetails(file):
