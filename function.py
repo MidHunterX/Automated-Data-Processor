@@ -903,9 +903,9 @@ def findVacancySpots(school_id, cursor):
     query = """
     SELECT DISTINCT Class
     FROM Students
-    WHERE SchoolID = ? AND Class >= ?
+    WHERE SchoolID = ? AND Class >= ? AND Class <= ?
     """
-    cursor.execute(query, (school_id, class_group.start))
+    cursor.execute(query, (school_id, class_group.start, lowest_class))
     occupied_classes = {row[0] for row in cursor.fetchall()}
 
     vacancy_list = [cls for cls in class_group if cls not in occupied_classes]
