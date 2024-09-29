@@ -795,13 +795,13 @@ def getExistingAccounts(studentDetails, cursor):
     cursor.execute(query, acc_nos)
     existing_accounts = cursor.fetchall()
 
-    studentDetails = []
+    data = []
     for db_class, db_name, db_acc, db_ifsc, db_branch in existing_accounts:
-        studentDetails.append(
+        data.append(
             (db_class, db_name, db_acc, db_ifsc, db_branch)
         )
 
-    return studentDetails
+    return data
 
 
 def getNonExistingAccounts(studentDetails, existingAccounts):
@@ -832,17 +832,132 @@ def getNonExistingAccounts(studentDetails, existingAccounts):
     return non_existing_accounts
 
 
-def printExistingAccounts(comparison_list):
+def identifySchool(existingAccounts, cursor):
+    """
+    Identify the school for the given existing students.
+
+    Parameters:
+    - existingAccounts (list): A list of tuples containing existing accounts.
+        data = [(db_class, db_name, db_acc, db_ifsc, db_branch)]
+    - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
+
+    Returns:
+    - int or None: SchoolID if all students belong to the same school, None otherwise.
+    """
+    acc_nos = [entry[2] for entry in existingAccounts]  # entry[2] is db_acc
+
+    query = """
+    SELECT DISTINCT SchoolID
+    FROM Students
+    WHERE AccNo IN ({})
+    """.format(','.join('?' for _ in acc_nos))
+
+    cursor.execute(query, acc_nos)
+    school_ids = cursor.fetchall()
+
+    if len(school_ids) == 1:
+        return school_ids[0][0]
+    else:
+        return None
+
+
+def findVacancySpots(school_id, cursor):
+    """
+    Find vacancy spots in the given school.
+
+    Parameters:
+    - school_id (int): The ID of the school to check for vacancies.
+    - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
+
+    Returns:
+    - tuple: (school_id, vacancy_list) where vacancy_list is a list of integers representing vacant classes.
+    """
+    if school_id == None:
+        return None, []
+
+    # Lowest class entry available in the school
+    query = """
+    SELECT MIN(Class)
+    FROM Students
+    WHERE SchoolID = ?
+    """
+    cursor.execute(query, (school_id,))
+    lowest_class = cursor.fetchone()[0]
+
+    if not lowest_class:
+        return school_id, []  # No students found in the school
+
+    # Determine class group range
+    if 1 <= lowest_class <= 10:
+        class_group = range(1, lowest_class + 1)
+    elif 11 <= lowest_class <= 12:
+        class_group = range(11, lowest_class + 1)
+    elif 13 <= lowest_class <= 15:
+        class_group = range(13, lowest_class + 1)
+    elif 16 <= lowest_class <= 17:
+        class_group = range(16, lowest_class + 1)
+    else:
+        return school_id, []
+
+    # Find vacancies
+    query = """
+    SELECT DISTINCT Class
+    FROM Students
+    WHERE SchoolID = ? AND Class >= ?
+    """
+    cursor.execute(query, (school_id, class_group.start))
+    occupied_classes = {row[0] for row in cursor.fetchall()}
+
+    vacancy_list = [cls for cls in class_group if cls not in occupied_classes]
+
+    return school_id, vacancy_list
+
+
+def updateClassVacancies(school_id, vacancies, studentDetails, cursor):
+    """
+    Update class vacancies with new students.
+
+    Parameters:
+    - school_id (int): The ID of the school to update.
+    - vacancies (list): A list of vacant classes.
+    - studentDetails (dict): A dictionary of tuples with student details.
+        data = { n: (name, standard, ifsc, acc_no, holder, branch) }
+    - cursor (sqlite3.Cursor): SQLite database cursor object to execute queries.
+
+    Returns:
+    - tuple: Tuple of lists of added and remaining students
+    """
+    added_students = []
+    remaining_students = []
+
+    for _, student in studentDetails.items():
+        name, standard, ifsc, acc_no, holder, branch = student
+
+        if standard in vacancies:
+            query = """
+            INSERT INTO Students (SchoolID, StudentName, Class, IFSC, AccNo, AccHolder, Branch, Verified)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """
+            cursor.execute(query, (school_id, name, standard, ifsc, acc_no, holder, branch, 'False'))
+            vacancies.remove(standard)
+            added_students.append(student)
+        else:
+            remaining_students.append(student)
+
+    return added_students, remaining_students
+
+
+def printStudentDataFrame2(student_data):
     """
     Parameters:
-    - comparison_list (list): Output of getExistingAccounts()
+    - student_data (list): List of Student Data
 
     Prints:
-    - Table showing database data and the provided data side by side.
+    - Table showing student data
     """
 
-    df = DataFrame(comparison_list, columns=[
-        'STD', 'Name', 'Acc No', 'IFSC', 'Branch',
+    df = DataFrame(student_data, columns=[
+        'Name', 'STD', 'IFSC', 'Acc No', 'Holder', 'Branch',
     ])
 
     print(tabulate.tabulate(df, headers='keys', tablefmt='rounded_outline', showindex=False))
